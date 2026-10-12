@@ -1,0 +1,3267 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Lab — Кодта, жаса, үйрен!</title>
+<style>
+:root{
+  --bg:#f4fdf8; --white:#ffffff;
+  --emerald:#10b981; --emerald-dark:#047857; --emerald-light:#d1fae5;
+  --cyan:#06b6d4; --cyan-light:#cffafe;
+  --yellow:#fbbf24; --yellow-light:#fef3c7;
+  --code:#16241f; --code-line:#1f332c; --code-text:#a7f3d0;
+  --ok:#ecfdf5; --okb:#6ee7b7;
+  --warn:#fff7ed; --warnb:#fdba74;
+  --text:#0f2b23; --muted:#5b7a70; --border:#d7ebe2;
+  --radius:16px; --shadow:0 6px 24px rgba(6,95,70,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.65; font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--emerald-dark)}
+button{font-family:inherit}
+
+/* ---------- HEADER ---------- */
+header.top{
+  background:linear-gradient(120deg,#0ea472 0%,#10b981 45%,#06b6d4 100%);
+  color:#fff; padding:16px 20px; display:flex; align-items:center; gap:14px;
+  flex-wrap:wrap; justify-content:space-between;
+}
+.logo{display:flex;align-items:center;gap:12px}
+.logo .mark{
+  width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.2);
+  display:grid;place-items:center;font-size:24px;backdrop-filter:blur(4px);
+  border:1px solid rgba(255,255,255,.35)
+}
+.logo h1{font-size:22px;letter-spacing:1.5px;font-weight:800}
+.logo p{font-size:12.5px;opacity:.92}
+.top-stats{display:flex;gap:10px;flex-wrap:wrap}
+.chip{
+  background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.3);
+  padding:6px 13px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap
+}
+
+/* ---------- NAV ---------- */
+nav.main{
+  background:#fff; border-bottom:1px solid var(--border); display:flex; gap:6px;
+  overflow-x:auto; padding:9px 14px; position:sticky; top:0; z-index:60;
+  box-shadow:0 2px 14px rgba(6,95,70,.05); scrollbar-width:thin;
+}
+nav.main a{
+  padding:8px 15px; border-radius:999px; text-decoration:none; color:var(--muted);
+  font-size:14px; white-space:nowrap; font-weight:600; transition:.15s;
+}
+nav.main a:hover{background:var(--emerald-light);color:var(--emerald-dark)}
+nav.main a.active{background:var(--emerald);color:#fff;box-shadow:0 4px 12px rgba(16,185,129,.3)}
+
+/* ---------- LAYOUT ---------- */
+main{max-width:1220px;margin:0 auto;padding:22px 16px 70px}
+.page-head{margin-bottom:20px}
+.page-head h2{font-size:26px;color:var(--emerald-dark);letter-spacing:.3px}
+.page-head p{color:var(--muted);font-size:15px;margin-top:4px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+
+.card{
+  background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px;box-shadow:var(--shadow);
+}
+.card h3{font-size:18px;color:var(--emerald-dark);margin-bottom:10px}
+.card h4{font-size:15.5px;margin:14px 0 6px;color:var(--emerald-dark)}
+.card p{margin-bottom:9px;font-size:15px}
+.card ul,.card ol{margin:8px 0 12px 22px;font-size:15px}
+.card li{margin-bottom:5px}
+
+.btn{
+  display:inline-flex;align-items:center;gap:8px;justify-content:center;
+  background:var(--emerald);color:#fff;border:none;padding:11px 20px;border-radius:12px;
+  font-size:15px;font-weight:700;cursor:pointer;transition:.15s;text-decoration:none;
+}
+.btn:hover{background:var(--emerald-dark);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn.sec{background:#fff;color:var(--emerald-dark);border:2px solid var(--emerald-light)}
+.btn.sec:hover{background:var(--emerald-light)}
+.btn.cy{background:var(--cyan)}.btn.cy:hover{background:#0891b2}
+.btn.ye{background:var(--yellow);color:#6b4600}.btn.ye:hover{background:#f59e0b}
+.btn.sm{padding:7px 13px;font-size:13.5px;border-radius:10px}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+.badge{
+  display:inline-block;padding:3px 11px;border-radius:999px;font-size:12.5px;
+  font-weight:700;background:var(--emerald-light);color:var(--emerald-dark)
+}
+.badge.cy{background:var(--cyan-light);color:#0e7490}
+.badge.ye{background:var(--yellow-light);color:#92400e}
+
+/* ---------- HOME ---------- */
+.hero{
+  background:linear-gradient(135deg,#ffffff 0%,#ecfdf5 55%,#cffafe 100%);
+  border:1px solid var(--border); border-radius:24px; padding:38px 28px; text-align:center;
+  box-shadow:var(--shadow); margin-bottom:24px; position:relative; overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;inset:auto -60px -90px auto;width:260px;height:260px;
+  background:radial-gradient(circle,rgba(251,191,36,.28),transparent 70%);border-radius:50%
+}
+.hero h2{font-size:clamp(30px,6vw,52px);letter-spacing:4px;color:var(--emerald-dark);font-weight:900}
+.hero .slogan{font-size:clamp(15px,2.4vw,19px);color:#0e7490;font-weight:600;margin:12px 0 22px}
+.hero .btn-row{justify-content:center}
+
+.module-card{
+  border-radius:var(--radius);padding:22px;color:#fff;position:relative;overflow:hidden;
+  box-shadow:var(--shadow);cursor:pointer;transition:.2s;border:none;text-align:left;width:100%
+}
+.module-card:hover{transform:translateY(-4px);box-shadow:0 14px 32px rgba(6,95,70,.18)}
+.module-card.py{background:linear-gradient(135deg,#059669,#10b981)}
+.module-card.doc{background:linear-gradient(135deg,#0891b2,#06b6d4)}
+.module-card h3{color:#fff;font-size:21px;margin-bottom:8px}
+.module-card ul{margin:10px 0 0 20px;font-size:14.5px;opacity:.96}
+.module-card li{margin-bottom:4px}
+
+/* ---------- CODE ---------- */
+pre.code{
+  background:var(--code);color:var(--code-text);padding:16px 18px;border-radius:14px;
+  overflow-x:auto;font-family:'Consolas','Fira Code',monospace;font-size:14px;
+  line-height:1.65;border:1px solid #24463b;margin:10px 0
+}
+pre.code .cm{color:#6b8f80}
+code.inline{background:var(--emerald-light);color:var(--emerald-dark);padding:2px 7px;border-radius:6px;font-family:Consolas,monospace;font-size:14px}
+
+/* ---------- EDITOR ---------- */
+.editor-layout{display:grid;grid-template-columns:250px 1fr 1fr;gap:14px;align-items:start}
+@media(max-width:1050px){.editor-layout{grid-template-columns:1fr}}
+.panel{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.panel-head{
+  padding:10px 15px;font-weight:700;font-size:14px;background:var(--emerald-light);
+  color:var(--emerald-dark);display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap
+}
+.panel-body{padding:14px}
+textarea#pycode{
+  width:100%;height:390px;background:var(--code);color:var(--code-text);border:none;outline:none;
+  padding:14px;font-family:'Consolas','Fira Code',monospace;font-size:14.5px;line-height:1.6;
+  resize:vertical;tab-size:4;display:block
+}
+.canvas-wrap{position:relative;background:#fff;height:390px}
+.canvas-wrap canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#turtleOverlay{pointer-events:none}
+.console{
+  background:#0f1d19;color:#a7f3d0;font-family:Consolas,monospace;font-size:13.5px;
+  padding:11px 14px;max-height:150px;overflow:auto;border-top:1px solid #24463b;white-space:pre-wrap
+}
+.console .err{color:#fca5a5}
+.console .ok{color:#86efac}
+.ref-item{font-size:13.4px;padding:6px 0;border-bottom:1px dashed var(--border)}
+.ref-item code{color:var(--emerald-dark);font-weight:700;font-family:Consolas,monospace}
+
+/* ---------- TASKS ---------- */
+.task-box{background:var(--ok);border:1.5px solid var(--okb);border-radius:14px;padding:16px;margin-top:14px}
+.task-box h4{color:var(--emerald-dark);margin-bottom:8px}
+.pool{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;min-height:44px}
+.item{
+  background:#fff;border:2px solid var(--border);border-radius:11px;padding:8px 14px;
+  cursor:pointer;font-size:14.3px;transition:.15s;user-select:none;font-weight:500
+}
+.item:hover{border-color:var(--emerald)}
+.item.sel{border-color:var(--yellow);background:var(--yellow-light);box-shadow:0 0 0 3px rgba(251,191,36,.25)}
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.cats{grid-template-columns:1fr}}
+.cat{
+  background:#fff;border:2px dashed var(--border);border-radius:13px;padding:12px;min-height:96px
+}
+.cat h5{font-size:14px;color:var(--emerald-dark);margin-bottom:8px}
+.cat.over{border-color:var(--emerald);background:var(--ok)}
+.order-list{list-style:none;margin:10px 0}
+.order-list li{
+  background:#fff;border:2px solid var(--border);border-radius:11px;padding:9px 12px;
+  margin-bottom:7px;display:flex;align-items:center;gap:10px;font-size:14.4px
+}
+.order-list li .num{width:26px;height:26px;border-radius:50%;background:var(--emerald-light);color:var(--emerald-dark);display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.order-list li .mv{margin-left:auto;display:flex;gap:5px}
+.order-list li .mv button{border:1px solid var(--border);background:#fff;border-radius:7px;width:28px;height:28px;cursor:pointer;font-weight:700;color:var(--emerald-dark)}
+.result-msg{margin-top:11px;padding:10px 13px;border-radius:11px;font-size:14.4px;font-weight:600}
+.result-msg.ok{background:var(--ok);border:1.5px solid var(--okb);color:var(--emerald-dark)}
+.result-msg.no{background:var(--warn);border:1.5px solid var(--warnb);color:#9a3412}
+
+/* ---------- TESTS ---------- */
+.opt{
+  display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--border);
+  border-radius:12px;padding:12px 16px;margin-bottom:9px;cursor:pointer;font-size:15px;
+  transition:.15s;font-family:inherit;color:var(--text)
+}
+.opt:hover:not(:disabled){border-color:var(--emerald);background:var(--ok)}
+.opt.correct{border-color:var(--emerald);background:var(--ok);font-weight:700}
+.opt.wrong{border-color:#f87171;background:#fef2f2}
+.opt:disabled{cursor:default}
+.progress-bar{height:9px;background:var(--emerald-light);border-radius:999px;overflow:hidden;margin:10px 0 18px}
+.progress-bar > div{height:100%;background:linear-gradient(90deg,var(--emerald),var(--cyan));transition:.35s;border-radius:999px}
+
+/* ---------- DOC / TABLE ---------- */
+.toolbar{display:flex;flex-wrap:wrap;gap:5px;padding:9px;background:#fff;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}
+.toolbar button{
+  background:#fff;border:1px solid var(--border);border-radius:9px;padding:7px 11px;
+  cursor:pointer;font-size:13.6px;font-weight:600;color:var(--muted);transition:.15s
+}
+.toolbar button:hover{background:var(--emerald-light);color:var(--emerald-dark);border-color:var(--emerald)}
+.toolbar select{border:1px solid var(--border);border-radius:9px;padding:6px 9px;font-size:13.6px;font-family:inherit;background:#fff}
+#docArea{
+  min-height:430px;background:#fff;border:1px solid var(--border);border-radius:14px;
+  padding:30px;outline:none;font-size:15.5px;line-height:1.8;box-shadow:var(--shadow)
+}
+#docArea h1{font-size:26px;margin-bottom:12px;color:var(--emerald-dark)}
+#docArea h2{font-size:21px;margin:14px 0 8px;color:var(--emerald-dark)}
+#docArea ul,#docArea ol{margin-left:24px;margin-bottom:10px}
+#docArea img{max-width:100%;border-radius:10px}
+
+table.editor{border-collapse:collapse;width:100%;background:#fff}
+table.editor td{
+  border:1px solid #b9d9cc;padding:8px 10px;min-width:70px;height:38px;
+  font-size:14.3px;vertical-align:top;cursor:pointer;outline:none
+}
+table.editor td.sel{background:var(--yellow-light);box-shadow:inset 0 0 0 2px var(--yellow)}
+
+/* ---------- RESULTS ---------- */
+.ach{
+  display:flex;gap:12px;align-items:center;background:#fff;border:1.5px solid var(--border);
+  border-radius:14px;padding:13px 15px;opacity:.5;transition:.2s
+}
+.ach.got{opacity:1;border-color:var(--okb);background:var(--ok);box-shadow:0 5px 18px rgba(16,185,129,.13)}
+.ach .ico{font-size:27px;flex:none}
+.ach b{display:block;font-size:14.6px;color:var(--emerald-dark)}
+.ach span{font-size:12.8px;color:var(--muted)}
+
+.stat{text-align:center;background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 10px}
+.stat b{display:block;font-size:29px;color:var(--emerald);font-weight:800}
+.stat span{font-size:13px;color:var(--muted)}
+
+footer.foot{
+  text-align:center;padding:26px 16px;color:var(--muted);font-size:13.4px;
+  border-top:1px solid var(--border);background:#fff;margin-top:30px
+}
+.hidden{display:none!important}
+.note{background:var(--yellow-light);border-left:4px solid var(--yellow);padding:11px 14px;border-radius:0 11px 11px 0;font-size:14.4px;margin:10px 0}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="logo">
+    <div class="mark">🧪</div>
+    <div>
+      <h1>DIGITAL LAB</h1>
+      <p>Код жаз. Сурет сал. Құжат жаса. Цифрлық әлемді зертте!</p>
+    </div>
+  </div>
+  <div class="top-stats">
+    <div class="chip" id="chipProgress">📈 Прогресс: 0%</div>
+    <div class="chip" id="chipAch">🏆 Жетістік: 0/6</div>
+  </div>
+</header>
+
+<nav class="main" id="mainnav"></nav>
+<main id="app"></main>
+<footer class="foot">Digital Lab — 5-сынып информатикасы · Интерактивті оқу платформасы</footer>
+
+<script>
+"use strict";
+/* =========================================================================
+   0. КӨМЕКШІ ФУНКЦИЯЛАР
+   ========================================================================= */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const app = $('#app');
+
+/* =========================================================================
+   1. ПРОГРЕСС (localStorage)
+   ========================================================================= */
+const Store = {
+  key: 'digitalLab_v1',
+  data: null,
+  load(){
+    try { this.data = JSON.parse(localStorage.getItem(this.key)) || null; } catch(e){ this.data = null; }
+    if(!this.data) this.data = {topics:[], tests:{}, final:null, ach:[], practice:[], editorRuns:0, docSaved:0, tables:0};
+    ['topics','ach','practice'].forEach(k => { if(!Array.isArray(this.data[k])) this.data[k]=[]; });
+    return this.data;
+  },
+  save(){ try{ localStorage.setItem(this.key, JSON.stringify(this.data)); }catch(e){} this.updateChips(); },
+  updateChips(){
+    const d = this.data;
+    const total = PY_TOPICS.length + DOC_TOPICS.length;
+    const doneT = d.topics.length;
+    const testsDone = Object.keys(d.tests).length;
+    const totalUnits = total + 10 + 12; // тақырып + тест + практика
+    const done = doneT + testsDone + d.practice.length + (d.final?1:0);
+    const pct = Math.min(100, Math.round(done / totalUnits * 100));
+    const c1 = $('#chipProgress'); if(c1) c1.textContent = '📈 Прогресс: ' + pct + '%';
+    const c2 = $('#chipAch'); if(c2) c2.textContent = '🏆 Жетістік: ' + d.ach.length + '/6';
+  },
+  has(arr, v){ return this.data[arr].indexOf(v) >= 0; },
+  add(arr, v){ if(!this.has(arr, v)){ this.data[arr].push(v); this.save(); } }
+};
+
+/* =========================================================================
+   2. PYTHON + TURTLE ИНТЕРПРЕТАТОРЫ
+   ========================================================================= */
+class PError extends Error{
+  constructor(msg, line){ super(msg); this.line = line || 0; this.isP = true; }
+}
+
+/* ---------- Токенизатор ---------- */
+function stripComment(line){
+  let out = '', inStr = null;
+  for(let i=0;i<line.length;i++){
+    const c = line[i];
+    if(inStr){ out += c; if(c === inStr && line[i-1] !== '\\') inStr = null; }
+    else if(c === '"' || c === "'"){ inStr = c; out += c; }
+    else if(c === '#') break;
+    else out += c;
+  }
+  return out;
+}
+
+function tokenize(src){
+  const lines = String(src).replace(/\r/g,'').split('\n');
+  const toks = [], indents = [0];
+  let depth = 0;
+  const push = (t,v,line) => toks.push({t, v, line});
+
+  for(let ln=0; ln<lines.length; ln++){
+    const raw = stripComment(lines[ln]);
+    if(raw.trim() === '') continue;
+    let i = 0, ind = 0;
+    while(i < raw.length && (raw[i] === ' ' || raw[i] === '\t')){ ind += raw[i] === '\t' ? 4 : 1; i++; }
+    if(depth === 0){
+      const cur = indents[indents.length-1];
+      if(ind > cur){ indents.push(ind); push('INDENT', null, ln+1); }
+      else if(ind < cur){
+        while(indents.length > 1 && ind < indents[indents.length-1]){ indents.pop(); push('DEDENT', null, ln+1); }
+        if(ind !== indents[indents.length-1])
+          throw new PError(`Шегініс дұрыс емес (${ln+1}-жол). Блок ішіндегі жолдарды бірдей шегіндір.`, ln+1);
+      }
+    }
+    while(i < raw.length){
+      const c = raw[i];
+      if(c === ' ' || c === '\t'){ i++; continue; }
+      if(c === '#') break;
+      if(c === '"' || c === "'"){
+        i++; let s = '';
+        while(i < raw.length && raw[i] !== c){
+          if(raw[i] === '\\' && i+1 < raw.length){ i++; s += raw[i] === 'n' ? '\n' : raw[i]; }
+          else s += raw[i];
+          i++;
+        }
+        if(i >= raw.length) throw new PError(`Жабылмаған тырнақша (${ln+1}-жол)`, ln+1);
+        i++; push('STR', s, ln+1); continue;
+      }
+      if(/[0-9]/.test(c)){
+        let s = '';
+        while(i < raw.length && /[0-9.]/.test(raw[i])){ s += raw[i]; i++; }
+        push('NUM', parseFloat(s), ln+1); continue;
+      }
+      if(/[A-Za-z_\u0400-\u04FF]/.test(c)){
+        let s = '';
+        while(i < raw.length && /[A-Za-z0-9_\u0400-\u04FF]/.test(raw[i])){ s += raw[i]; i++; }
+        push('ID', s, ln+1); continue;
+      }
+      const two = raw.substr(i,2);
+      if(['==','!=','<=','>=','//','**','+=','-='].includes(two)){ push('OP', two, ln+1); i += 2; continue; }
+      if('+-*/%<>=(),:.[]'.includes(c)){
+        push('OP', c, ln+1);
+        if(c === '(' || c === '[') depth++;
+        if(c === ')' || c === ']') depth--;
+        i++; continue;
+      }
+      throw new PError(`Танылмаған таңба: "${c}" (${ln+1}-жол)`, ln+1);
+    }
+    push('NEWLINE', null, ln+1);
+  }
+  while(indents.length > 1){ indents.pop(); push('DEDENT', null, lines.length); }
+  push('EOF', null, lines.length);
+  return toks;
+}
+
+/* ---------- Парсер ---------- */
+class Parser{
+  constructor(toks){ this.toks = toks; this.i = 0; }
+  peek(k){ return this.toks[this.i + (k||0)] || this.toks[this.toks.length-1]; }
+  next(){ return this.toks[this.i++] || this.toks[this.toks.length-1]; }
+  at(t,v){ const tk = this.peek(); return tk.t === t && (v === undefined || tk.v === v); }
+  expect(t,v){
+    if(!this.at(t,v)){
+      const tk = this.peek();
+      const got = (tk.v !== undefined && tk.v !== null) ? tk.v : tk.t;
+      throw new PError(`"${v || t}" күтілді, бірақ "${got}" табылды (${tk.line}-жол)`, tk.line);
+    }
+    return this.next();
+  }
+  skipNL(){ while(this.at('NEWLINE')) this.i++; }
+  endLine(){ if(this.at('NEWLINE')) this.i++; }
+
+  parseProgram(){
+    const b = []; this.skipNL();
+    while(!this.at('EOF')){ b.push(this.parseStatement()); this.skipNL(); }
+    return b;
+  }
+  parseBlock(){
+    if(this.at('NEWLINE')){
+      this.next();
+      if(!this.at('INDENT'))
+        throw new PError('Блок бос: қос нүктеден (:) кейін шегініспен жазылған жол болуы керек', this.peek().line);
+      this.next();
+      const stmts = [];
+      while(!this.at('DEDENT') && !this.at('EOF')){
+        if(this.at('NEWLINE')){ this.next(); continue; }
+        stmts.push(this.parseStatement());
+      }
+      if(this.at('DEDENT')) this.next();
+      return stmts;
+    }
+    return [this.parseSimpleStatement()];
+  }
+  parseStatement(){
+    const tk = this.peek();
+    if(tk.t === 'ID'){
+      switch(tk.v){
+        case 'import': {
+          this.next(); const name = this.expect('ID').v;
+          if(this.at('ID','as')){ this.next(); this.expect('ID'); }
+          this.endLine(); return {type:'import', name, line:tk.line};
+        }
+        case 'from': {
+          this.next(); const name = this.expect('ID').v;
+          this.expect('ID','import');
+          const items = [];
+          while(!this.at('NEWLINE') && !this.at('EOF')){
+            const t = this.next();
+            if(t.t === 'OP' && t.v === '*') items.push('*');
+            else if(t.t === 'ID') items.push(t.v);
+            else if(t.t === 'OP' && t.v === ',') continue;
+            else break;
+          }
+          this.endLine(); return {type:'fromimport', name, items, line:tk.line};
+        }
+        case 'for': return this.parseFor();
+        case 'while': return this.parseWhile();
+        case 'if': return this.parseIf();
+        case 'def':
+          throw new PError('Бұл редакторда "def" (функция) қолдау көрсетілмейді. Цикл мен шартты қолданып көр.', tk.line);
+        case 'pass': this.next(); this.endLine(); return {type:'pass', line:tk.line};
+        case 'break': this.next(); this.endLine(); return {type:'break', line:tk.line};
+        case 'continue': this.next(); this.endLine(); return {type:'continue', line:tk.line};
+      }
+    }
+    return this.parseSimpleStatement();
+  }
+  parseSimpleStatement(){
+    const line = this.peek().line;
+    const e = this.parseExpr();
+    if(this.at('OP','=')){
+      this.next();
+      const v = this.parseExpr();
+      this.endLine();
+      if(e.type !== 'var') throw new PError('Мәнді тек айнымалыға беруге болады', line);
+      return {type:'assign', name:e.name, value:v, line};
+    }
+    if(this.at('OP','+=') || this.at('OP','-=')){
+      const op = this.next().v[0];
+      const v = this.parseExpr(); this.endLine();
+      if(e.type !== 'var') throw new PError('Тек айнымалыны өзгертуге болады', line);
+      return {type:'assign', name:e.name, value:{type:'bin', op, l:e, r:v, line}, line};
+    }
+    this.endLine();
+    return {type:'expr', expr:e, line};
+  }
+  parseFor(){
+    const line = this.peek().line;
+    this.expect('ID','for');
+    const v = this.expect('ID').v;
+    this.expect('ID','in');
+    const iter = this.parseExpr();
+    this.expect('OP',':');
+    const body = this.parseBlock();
+    return {type:'for', varName:v, iter, body, line};
+  }
+  parseWhile(){
+    const line = this.peek().line;
+    this.expect('ID','while');
+    const cond = this.parseExpr();
+    this.expect('OP',':');
+    const body = this.parseBlock();
+    return {type:'while', cond, body, line};
+  }
+  parseIf(){
+    const line = this.peek().line;
+    this.expect('ID','if');
+    const cond = this.parseExpr();
+    this.expect('OP',':');
+    const body = this.parseBlock();
+    const root = {type:'if', cond, body, orelse:null, line};
+    let cur = root;
+    for(;;){
+      if(this.at('ID','elif')){
+        const l2 = this.next().line;
+        const c2 = this.parseExpr(); this.expect('OP',':');
+        const b2 = this.parseBlock();
+        const nn = {type:'if', cond:c2, body:b2, orelse:null, line:l2};
+        cur.orelse = [nn]; cur = nn;
+      } else if(this.at('ID','else')){
+        this.next(); this.expect('OP',':');
+        cur.orelse = this.parseBlock();
+        break;
+      } else break;
+    }
+    return root;
+  }
+  /* --- Өрнектер --- */
+  parseExpr(){ return this.parseOr(); }
+  parseOr(){
+    let l = this.parseAnd();
+    while(this.at('ID','or')){ this.next(); l = {type:'bin', op:'or', l, r:this.parseAnd()}; }
+    return l;
+  }
+  parseAnd(){
+    let l = this.parseNot();
+    while(this.at('ID','and')){ this.next(); l = {type:'bin', op:'and', l, r:this.parseNot()}; }
+    return l;
+  }
+  parseNot(){
+    if(this.at('ID','not')){ this.next(); return {type:'un', op:'not', e:this.parseNot()}; }
+    return this.parseCmp();
+  }
+  parseCmp(){
+    let l = this.parseAdd();
+    while(this.at('OP') && ['==','!=','<','>','<=','>='].includes(this.peek().v)){
+      const op = this.next().v;
+      l = {type:'bin', op, l, r:this.parseAdd()};
+    }
+    return l;
+  }
+  parseAdd(){
+    let l = this.parseMul();
+    while(this.at('OP') && (this.peek().v === '+' || this.peek().v === '-')){
+      const op = this.next().v;
+      l = {type:'bin', op, l, r:this.parseMul()};
+    }
+    return l;
+  }
+  parseMul(){
+    let l = this.parseUnary();
+    while(this.at('OP') && ['*','/','//','%'].includes(this.peek().v)){
+      const op = this.next().v;
+      l = {type:'bin', op, l, r:this.parseUnary()};
+    }
+    return l;
+  }
+  parseUnary(){
+    if(this.at('OP','-')){ this.next(); return {type:'un', op:'-', e:this.parseUnary()}; }
+    if(this.at('OP','+')){ this.next(); return this.parseUnary(); }
+    return this.parsePrimary();
+  }
+  parseArgs(){
+    this.expect('OP','(');
+    const args = [];
+    if(!this.at('OP',')')){
+      for(;;){
+        args.push(this.parseExpr());
+        if(this.at('OP',',')){ this.next(); continue; }
+        break;
+      }
+    }
+    this.expect('OP',')');
+    return args;
+  }
+  parsePrimary(){
+    const tk = this.next();
+    const line = tk.line;
+    if(tk.t === 'NUM') return {type:'num', v:tk.v, line};
+    if(tk.t === 'STR') return {type:'str', v:tk.v, line};
+    if(tk.t === 'ID'){
+      if(tk.v === 'True') return {type:'num', v:true, line};
+      if(tk.v === 'False') return {type:'num', v:false, line};
+      if(tk.v === 'None') return {type:'num', v:0, line};
+      let node = {type:'var', name:tk.v, line};
+      while(this.at('OP','.')){
+        this.next();
+        const p = this.expect('ID');
+        node = {type:'member', obj:node, name:p.v, line};
+      }
+      if(this.at('OP','(')) node = {type:'call', callee:node, args:this.parseArgs(), line};
+      return node;
+    }
+    if(tk.t === 'OP' && tk.v === '('){
+      const e = this.parseExpr();
+      this.expect('OP',')');
+      return e;
+    }
+    if(tk.t === 'OP' && tk.v === '['){
+      const items = [];
+      if(!this.at('OP',']')){
+        for(;;){
+          items.push(this.parseExpr());
+          if(this.at('OP',',')){ this.next(); continue; }
+          break;
+        }
+      }
+      this.expect('OP',']');
+      return {type:'list', items, line};
+    }
+    throw new PError(`Түсініксіз өрнек: "${tk.v !== undefined && tk.v !== null ? tk.v : tk.t}" (${line}-жол)`, line);
+  }
+}
+
+/* ---------- Turtle симуляторы ---------- */
+class TurtleSim{
+  constructor(){
+    this.maxSteps = 30000;
+    this.resetAll();
+  }
+  resetAll(){
+    this.bgcolor = '#ffffff';
+    this.ops = [];
+    this.steps = 0;
+    this.x = 0; this.y = 0; this.heading = 0;
+    this.penDown = true;
+    this.penColor = '#0f2b23';
+    this.fillColor = '#10b981';
+    this.penSize = 2;
+    this.speed = 5;
+    this.shape = 'classic';
+    this.visible = true;
+    this.fillPts = null; this.fillIndex = -1;
+    this.turtleTrail = []; // {x,y,h}
+  }
+  clear(){ this.ops = []; this.steps = 0; this.x = 0; this.y = 0; this.heading = 0; }
+  _chk(){
+    if(++this.steps > this.maxSteps)
+      throw new PError('Тасбақа тым көп әрекет орындады. Шексіз цикл болуы мүмкін — цикл шартын тексер.', 0);
+  }
+  _push(op){ this.ops.push(op); }
+  _mark(){ this.turtleTrail.push({x:this.x, y:this.y, h:this.heading}); }
+  _moveTo(nx, ny){
+    this._chk();
+    if(this.penDown && (Math.abs(nx-this.x) > 1e-9 || Math.abs(ny-this.y) > 1e-9)){
+      this._push({type:'line', x1:this.x, y1:this.y, x2:nx, y2:ny,
+                  color:this.penColor, width:this.penSize, h:this.heading});
+    }
+    this.x = nx; this.y = ny;
+    if(this.fillPts) this.fillPts.push({x:nx, y:ny});
+    this._mark();
+  }
+  forward(d){
+    d = +d || 0;
+    const r = this.heading * Math.PI / 180;
+    this._moveTo(this.x + d*Math.cos(r), this.y + d*Math.sin(r));
+  }
+  backward(d){ this.forward(-(+d || 0)); }
+  right(a){ this.heading -= (+a || 0); this._mark(); }
+  left(a){ this.heading += (+a || 0); this._mark(); }
+  goto(x, y){ this._moveTo(+x || 0, +y || 0); }
+  setHeading(a){ this.heading = +a || 0; this._mark(); }
+  home(){
+    this.heading = 0;
+    this._moveTo(0, 0);
+  }
+  penUp(){ this.penDown = false; }
+  penDownFn(){ this.penDown = true; }
+  beginFill(){ this.fillPts = [{x:this.x, y:this.y}]; this.fillIndex = this.ops.length; }
+  endFill(){
+    if(this.fillPts && this.fillPts.length > 2){
+      this.ops.splice(this.fillIndex, 0, {type:'fill', pts:this.fillPts.slice(), color:this.fillColor});
+    }
+    this.fillPts = null; this.fillIndex = -1;
+  }
+  circle(r, extent){
+    r = +r || 0; extent = (extent === undefined ? 360 : +extent);
+    const n = Math.max(8, Math.round(Math.abs(extent) / 5));
+    const stepAngle = extent / n;
+    const stepLen = 2 * Math.PI * Math.abs(r) * Math.abs(stepAngle) / 360;
+    const dir = r >= 0 ? 1 : -1;
+    for(let i=0;i<n;i++){
+      this.forward(stepLen);
+      this.heading += stepAngle * dir;
+    }
+    this._mark();
+  }
+  dot(size){
+    this._chk();
+    this._push({type:'dot', x:this.x, y:this.y, r:(+size || 6)/2, color:this.penColor});
+  }
+  write(text){
+    this._chk();
+    this._push({type:'text', x:this.x, y:this.y, text:String(text), color:this.penColor});
+  }
+}
+
+/* ---------- Turtle нысаны (Python-ға ұқсас API) ---------- */
+function makeTurtleObject(sim){
+  const n = v => { const x = Number(v); if(isNaN(x)) throw new PError('Сандық мән күтілді'); return x; };
+  const t = {};
+  t.forward = t.fd = d => sim.forward(n(d));
+  t.backward = t.bk = t.back = d => sim.backward(n(d));
+  t.right = t.rt = a => sim.right(n(a));
+  t.left = t.lt = a => sim.left(n(a));
+  t.goto = t.setpos = t.setposition = (x,y) => sim.goto(n(x), n(y));
+  t.setheading = t.seth = a => sim.setHeading(n(a));
+  t.home = () => sim.home();
+  t.penup = t.pu = t.up = () => sim.penUp();
+  t.pendown = t.pd = t.down = () => sim.penDownFn();
+  t.begin_fill = () => sim.beginFill();
+  t.end_fill = () => sim.endFill();
+  t.circle = (r,e) => sim.circle(n(r), e === undefined ? 360 : n(e));
+  t.dot = s => sim.dot(s === undefined ? 6 : n(s));
+  t.write = (txt) => sim.write(txt);
+  t.color = t.pencolor = (a,b) => {
+    if(b !== undefined){ sim.penColor = String(a); sim.fillColor = String(b); }
+    else { sim.penColor = String(a); sim.fillColor = String(a); }
+  };
+  t.fillcolor = c => { sim.fillColor = String(c); };
+  t.pensize = t.width = w => { sim.penSize = Math.max(1, n(w)); };
+  t.speed = s => { sim.speed = n(s); };
+  t.shape = s => { sim.shape = String(s); };
+  t.hideturtle = t.ht = () => { sim.visible = false; };
+  t.showturtle = t.st = () => { sim.visible = true; };
+  t.clear = () => { sim.ops = []; };
+  t.reset = () => { sim.clear(); };
+  t.xcor = () => sim.x;
+  t.ycor = () => sim.y;
+  t.heading = () => sim.heading;
+  return t;
+}
+
+/* ---------- Модуль ---------- */
+function makeTurtleModule(sim){
+  const def = makeTurtleObject(sim);
+  const mod = {};
+  mod.Turtle = () => def;
+  mod.Screen = () => ({ bgcolor: c => { sim.bgcolor = String(c); }, setup: ()=>{}, title: ()=>{} });
+  mod.done = () => {};
+  mod.exitonclick = () => {};
+  mod.mainloop = () => {};
+  mod.bye = () => {};
+  mod.title = () => {};
+  mod.setup = () => {};
+  mod.bgcolor = c => { sim.bgcolor = String(c); };
+  mod.clearscreen = () => { sim.ops = []; };
+  mod.resetscreen = () => { sim.resetAll(); };
+  ['forward','fd','backward','bk','back','right','rt','left','lt','goto','setpos','setposition',
+   'setheading','seth','home','penup','pu','up','pendown','pd','down','begin_fill','end_fill',
+   'circle','dot','write','color','pencolor','fillcolor','pensize','width','speed','shape',
+   'hideturtle','ht','showturtle','st','clear','reset','xcor','ycor','heading'
+  ].forEach(k => { if(def[k]) mod[k] = def[k]; });
+  return mod;
+}
+
+/* ---------- Орындаушы ---------- */
+function runPython(src, sim, outputs, opts){
+  const toks = tokenize(src);
+  const ast = new Parser(toks).parseProgram();
+  const turtleModule = makeTurtleModule(sim);
+  const env = Object.create(null);
+
+  const ctl = {
+    start: Date.now(),
+    limit: (opts && opts.limit) || 6000,
+    maxLoop: (opts && opts.maxLoop) || 20000,
+    check(){
+      if(Date.now() - this.start > this.limit)
+        throw new PError('Код тым ұзақ орындалды. Шексіз цикл болуы мүмкін — шартты тексер.');
+    }
+  };
+
+  const toNum = v => {
+    if(typeof v === 'number') return v;
+    if(typeof v === 'boolean') return v ? 1 : 0;
+    const n = Number(v);
+    if(isNaN(n)) throw new PError(`"${v}" санына айналмайды`);
+    return n;
+  };
+  const toStr = v => (typeof v === 'boolean') ? (v ? 'True' : 'False') : String(v);
+  const truthy = v => {
+    if(typeof v === 'boolean') return v;
+    if(typeof v === 'number') return v !== 0;
+    if(typeof v === 'string') return v.length > 0;
+    if(Array.isArray(v)) return v.length > 0;
+    return !!v;
+  };
+
+  const builtins = {
+    range: (...a) => {
+      let start = 0, stop = 0, step = 1;
+      if(a.length === 1) stop = toNum(a[0]);
+      else if(a.length === 2){ start = toNum(a[0]); stop = toNum(a[1]); }
+      else { start = toNum(a[0]); stop = toNum(a[1]); step = toNum(a[2]) || 1; }
+      start = Math.trunc(start); stop = Math.trunc(stop); step = Math.trunc(step) || 1;
+      const out = [];
+      if(step > 0) for(let i=start;i<stop;i+=step){ out.push(i); if(out.length > 100000) break; }
+      else for(let i=start;i>stop;i+=step){ out.push(i); if(out.length > 100000) break; }
+      return out;
+    },
+    print: (...a) => { outputs.push(a.map(toStr).join(' ')); },
+    int: v => { const n = parseInt(toStr(v), 10); return isNaN(n) ? 0 : n; },
+    float: v => { const n = parseFloat(toStr(v)); return isNaN(n) ? 0 : n; },
+    str: v => toStr(v),
+    len: v => (Array.isArray(v) || typeof v === 'string') ? v.length : 0,
+    abs: v => Math.abs(toNum(v)),
+    round: v => Math.round(toNum(v)),
+    max: (...a) => Math.max(...a.map(toNum)),
+    min: (...a) => Math.min(...a.map(toNum)),
+    sum: a => a.reduce((s,x) => s + toNum(x), 0),
+    input: (p) => { const r = window.prompt(p === undefined ? 'Мәнді енгіз:' : toStr(p)); return r === null ? '' : r; }
+  };
+  Object.keys(builtins).forEach(k => env[k] = builtins[k]);
+
+  function getMember(obj, name, line){
+    if(obj === null || obj === undefined)
+      throw new PError(`"${name}" әдісін қолдану мүмкін емес: нысан жоқ (${line}-жол)`, line);
+    if(typeof obj === 'object' && name in obj) return obj[name];
+    throw new PError(`"${name}" әдісі табылмады. Команда атауын тексер.`, line);
+  }
+
+  function evalExpr(e){
+    switch(e.type){
+      case 'num': return e.v;
+      case 'str': return e.v;
+      case 'list': return e.items.map(evalExpr);
+      case 'var': {
+        if(e.name in env) return env[e.name];
+        if(e.name === 'turtle') return turtleModule;
+        throw new PError(`"${e.name}" айнымалысы анықталмаған. Оны алдын ала жазуды ұмытпа.`, e.line);
+      }
+      case 'member': return getMember(evalExpr(e.obj), e.name, e.line);
+      case 'un': {
+        if(e.op === '-') return -toNum(evalExpr(e.e));
+        if(e.op === 'not') return !truthy(evalExpr(e.e));
+        return 0;
+      }
+      case 'bin': {
+        const op = e.op;
+        if(op === 'and') return truthy(evalExpr(e.l)) ? evalExpr(e.r) : false;
+        if(op === 'or') return truthy(evalExpr(e.l)) ? true : evalExpr(e.r);
+        const a = evalExpr(e.l), b = evalExpr(e.r);
+        switch(op){
+          case '+': return (typeof a === 'string' || typeof b === 'string') ? toStr(a) + toStr(b) : toNum(a) + toNum(b);
+          case '-': return toNum(a) - toNum(b);
+          case '*': return toNum(a) * toNum(b);
+          case '/': {
+            const d = toNum(b);
+            if(d === 0) throw new PError('Нөлге бөлуге болмайды', e.line);
+            return toNum(a) / d;
+          }
+          case '//': { const d = toNum(b); if(d === 0) throw new PError('Нөлге бөлуге болмайды', e.line); return Math.floor(toNum(a)/d); }
+          case '%': { const d = toNum(b); if(d === 0) throw new PError('Нөлге бөлуге болмайды', e.line); return toNum(a) % d; }
+          case '==': return a === b || toStr(a) === toStr(b);
+          case '!=': return !(a === b || toStr(a) === toStr(b));
+          case '<': return toNum(a) < toNum(b);
+          case '>': return toNum(a) > toNum(b);
+          case '<=': return toNum(a) <= toNum(b);
+          case '>=': return toNum(a) >= toNum(b);
+        }
+        return 0;
+      }
+      case 'call': {
+        ctl.check();
+        const args = e.args.map(evalExpr);
+        let fn, self;
+        if(e.callee.type === 'var'){
+          if(!(e.callee.name in env))
+            throw new PError(`"${e.callee.name}" функциясы табылмады. Команда атауын тексер.`, e.line);
+          fn = env[e.callee.name];
+        } else if(e.callee.type === 'member'){
+          self = evalExpr(e.callee.obj);
+          fn = getMember(self, e.callee.name, e.line);
+        } else {
+          throw new PError('Функция шақыру қатесі', e.line);
+        }
+        if(typeof fn !== 'function')
+          throw new PError(`"${e.callee.name || '?'}" — функция емес, оны шақыруға болмайды.`, e.line);
+        try{
+          return fn.apply(self, args);
+        }catch(err){
+          if(err && err.isP) throw err;
+          throw new PError(`"${e.callee.name || 'команда'}" орындалмады: ${err.message}`, e.line);
+        }
+      }
+    }
+    return 0;
+  }
+
+  function execBlock(stmts){
+    for(const s of stmts){
+      const r = execStmt(s);
+      if(r === 'break' || r === 'continue' || r === 'return') return r;
+    }
+    return null;
+  }
+  function execStmt(s){
+    ctl.check();
+    switch(s.type){
+      case 'import': env[s.name] = (s.name === 'turtle') ? turtleModule : {}; return;
+      case 'fromimport': {
+        if(s.name !== 'turtle') throw new PError(`"${s.name}" модулі қолдау көрсетілмейді. Тек "turtle" бар.`, s.line);
+        if(s.items.includes('*')) Object.keys(turtleModule).forEach(k => env[k] = turtleModule[k]);
+        else s.items.forEach(k => {
+          if(!(k in turtleModule)) throw new PError(`turtle модулінде "${k}" жоқ`, s.line);
+          env[k] = turtleModule[k];
+        });
+        return;
+      }
+      case 'assign': env[s.name] = evalExpr(s.value); return;
+      case 'expr': evalExpr(s.expr); return;
+      case 'if': {
+        if(truthy(evalExpr(s.cond))) return execBlock(s.body);
+        else if(s.orelse) return execBlock(s.orelse);
+        return;
+      }
+      case 'while': {
+        let guard = 0;
+        while(truthy(evalExpr(s.cond))){
+          ctl.check();
+          if(++guard > ctl.maxLoop)
+            throw new PError('Цикл тым көп қайталанды (шексіз цикл болуы мүмкін). Шартты тексер.', s.line);
+          const r = execBlock(s.body);
+          if(r === 'break') break;
+        }
+        return;
+      }
+      case 'for': {
+        const it = evalExpr(s.iter);
+        if(!Array.isArray(it))
+          throw new PError('"for" цикліне тізім немесе range() керек. Мысалы: for i in range(4):', s.line);
+        if(it.length > ctl.maxLoop)
+          throw new PError('Цикл тым көп қайталанады (range мәні өте үлкен).', s.line);
+        for(const v of it){
+          ctl.check();
+          env[s.varName] = v;
+          const r = execBlock(s.body);
+          if(r === 'break') break;
+        }
+        return;
+      }
+      case 'pass': return;
+      case 'break': return 'break';
+      case 'continue': return 'continue';
+    }
+  }
+
+  execBlock(ast);
+  return {ops: sim.ops, bgcolor: sim.bgcolor};
+}
+
+/* =========================================================================
+   3. TURTLE РЕНДЕРЛЕУШІ
+   ========================================================================= */
+function fitCanvas(canvas){
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  const w = Math.max(1, Math.round(rect.width));
+  const h = Math.max(1, Math.round(rect.height));
+  canvas.width = Math.round(w * dpr);
+  canvas.height = Math.round(h * dpr);
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return {w, h, ctx};
+}
+
+function computeView(sim, w, h){
+  let minX = -100, maxX = 100, minY = -70, maxY = 70;
+  let any = false;
+  const acc = (x, y) => {
+    if(!any){ minX = maxX = x; minY = maxY = y; any = true; }
+    else {
+      if(x < minX) minX = x; if(x > maxX) maxX = x;
+      if(y < minY) minY = y; if(y > maxY) maxY = y;
+    }
+  };
+  for(const op of sim.ops){
+    if(op.type === 'line'){ acc(op.x1,op.y1); acc(op.x2,op.y2); }
+    else if(op.type === 'fill'){ op.pts.forEach(p => acc(p.x,p.y)); }
+    else if(op.type === 'dot'){ acc(op.x,op.y); }
+    else if(op.type === 'text'){ acc(op.x,op.y); }
+  }
+  if(!any){ minX = -160; maxX = 160; minY = -110; maxY = 110; }
+  acc(0, 0);
+  const bw = Math.max(maxX - minX, 20), bh = Math.max(maxY - minY, 20);
+  const pad = 42;
+  const scale = Math.min((w - pad*2)/bw, (h - pad*2)/bh);
+  const cx = w/2 - ((minX + maxX)/2) * scale;
+  const cy = h/2 + ((minY + maxY)/2) * scale;
+  return {scale: Math.max(scale, 0.01), cx, cy, w, h};
+}
+
+function drawOne(ctx, op, view){
+  const SX = x => view.cx + x * view.scale;
+  const SY = y => view.cy - y * view.scale;
+  switch(op.type){
+    case 'line': {
+      ctx.strokeStyle = op.color;
+      ctx.lineWidth = Math.max(1, op.width * view.scale);
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(SX(op.x1), SY(op.y1));
+      ctx.lineTo(SX(op.x2), SY(op.y2));
+      ctx.stroke();
+      break;
+    }
+    case 'fill': {
+      if(op.pts.length < 3) break;
+      ctx.fillStyle = op.color;
+      ctx.beginPath();
+      ctx.moveTo(SX(op.pts[0].x), SY(op.pts[0].y));
+      for(let i=1;i<op.pts.length;i++) ctx.lineTo(SX(op.pts[i].x), SY(op.pts[i].y));
+      ctx.closePath();
+      ctx.fill();
+      break;
+    }
+    case 'dot': {
+      ctx.fillStyle = op.color;
+      ctx.beginPath();
+      ctx.arc(SX(op.x), SY(op.y), Math.max(2, op.r * view.scale), 0, Math.PI*2);
+      ctx.fill();
+      break;
+    }
+    case 'text': {
+      ctx.fillStyle = op.color;
+      ctx.font = Math.max(11, 12 * view.scale) + 'px Segoe UI, sans-serif';
+      ctx.fillText(op.text, SX(op.x), SY(op.y));
+      break;
+    }
+  }
+}
+
+function drawTurtleMarker(ctx, x, y, h, view, shape){
+  const SX = view.cx + x * view.scale;
+  const SY = view.cy - y * view.scale;
+  const rad = Math.max(7, 9 * Math.min(view.scale, 1.4));
+  ctx.save();
+  ctx.translate(SX, SY);
+  ctx.rotate(-h * Math.PI / 180);
+  ctx.fillStyle = '#10b981';
+  ctx.strokeStyle = '#047857';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(rad*1.4, 0);
+  ctx.lineTo(-rad*0.9, -rad*0.95);
+  ctx.lineTo(-rad*0.35, 0);
+  ctx.lineTo(-rad*0.9, rad*0.95);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+}
+
+/* =========================================================================
+   4. МАЗМҰН ДЕРЕКТЕРІ — PYTHON ТАҚЫРЫПТАРЫ
+   ========================================================================= */
+const PY_TOPICS = [
+{
+  id:'py1', num:'3.1', title:'Алгоритмдер және ақылды жүйелер',
+  goal:'Алгоритм мен деректерді талдап, жауап беретін ақылды жүйенің айырмашылығын түсіндіру.',
+  theory:`
+    <h4>Алгоритм дегеніміз не?</h4>
+    <p><b>Алгоритм</b> — белгілі бір нәтижеге жету үшін <b>нақты ретпен</b> орындалатын әрекеттер тізбегі.</p>
+    <p>Мысалы, шай қайнату алгоритмі:</p>
+    <ol><li>Шәйнекке су құю</li><li>Шәйнекті қосу</li><li>Су қайнағанша күту</li><li>Шәйнекке құю</li></ol>
+    <h4>Алгоритмнің қадамдары</h4>
+    <ul>
+      <li><b>Басталуы</b> — жұмыстың басы.</li>
+      <li><b>Әрекеттер</b> — нақты командалар.</li>
+      <li><b>Тексеру</b> — нәтиже дұрыс па?</li>
+      <li><b>Аяқталуы</b> — жұмыстың соңы.</li>
+    </ul>
+    <h4>Орындаушы және командалар</h4>
+    <p><b>Орындаушы</b> — алгоритмді орындайтын нысан (адам, робот, компьютер). <b>Команда</b> — орындаушыға берілетін нақты тапсырма.</p>
+    <h4>Ақылды жүйе дегеніміз не?</h4>
+    <p><b>Ақылды жүйе</b> (жасанды интеллект) — тек ережені орындап қана қоймай, <b>деректерді талдап, өзі шешім қабылдай алатын</b> жүйе.</p>
+    <div class="note">🔎 <b>Айырмашылығы:</b> алгоритм алдын ала жазылған ережелерді ғана орындайды. Ақылды жүйе көп деректерден үйреніп, жаңа жағдайда да жауап бере алады.</div>
+    <h4>Күнделікті өмірден мысалдар</h4>
+    <ul>
+      <li>Рецепт бойынша тамақ дайындау — <b>нақты ережелердің орындалуы (алгоритм)</b>.</li>
+      <li>Бағдаршамның жұмысы — <b>белгілі ережемен жұмыс істейтін алгоритм</b>.</li>
+      <li>Суреттегі мысықты танитын қосымша — <b>ақылды жүйе</b>.</li>
+      <li>Бейне ұсынатын жүйе — <b>деректерді талдайтын ақылды жүйе</b>.</li>
+    </ul>`,
+  example: null,
+  tasks: [
+    { type:'category', title:'№1 тапсырма: «Алгоритм бе, әлде ақылды жүйе ме?»',
+      hint:'Әрекетті таңдап, тиісті санатқа басыңыз.',
+      cats:['Алгоритм (ереже)','Ақылды жүйе'],
+      items:[
+        {text:'Рецепт бойынша торт пісіру', cat:0},
+        {text:'Суреттегі итті танитын қосымша', cat:1},
+        {text:'Бағдаршамның жасыл-сары-қызыл болып жануы', cat:0},
+        {text:'Сенің сүйікті әніңді ұсынатын музыка қосымшасы', cat:1},
+        {text:'Кір жуғыш машинаның 30 минуттық бағдарламасы', cat:0},
+        {text:'Дауысты мәтінге айналдыратын жүйе', cat:1}
+      ]},
+    { type:'order', title:'№2 тапсырма: «Қадамдарды ретімен орналастыр»',
+      hint:'Компьютерді қосу қадамдарын дұрыс ретке келтіріңіз.',
+      steps:['Мониторды қосу','Жүйелік блоктағы қуат батырмасын басу','Парольді енгізіп, жүйеге кіру','Қажетті бағдарламаны ашу'],
+      correct:['Жүйелік блоктағы қуат батырмасын басу','Мониторды қосу','Парольді енгізіп, жүйеге кіру','Қажетті бағдарламаны ашу']}
+  ],
+  testId:'t1'
+},
+{
+  id:'py2', num:'3.2', title:'Python ортасы және Turtle кітапханасы',
+  goal:'Python тілін, Turtle кітапханасын және алғашқы командаларды меңгеру.',
+  theory:`
+    <h4>Программалау дегеніміз не?</h4>
+    <p><b>Программалау</b> — компьютерге қажетті әрекеттерді түсінетін тілде жазып беру.</p>
+    <h4>Python тілі</h4>
+    <p><b>Python</b> — қарапайым әрі оқуға жеңіл бағдарламалау тілі. Ол бүкіл әлемде оқушылар үшін ең танымал тілдердің бірі.</p>
+    <h4>Turtle кітапханасы</h4>
+    <p><b>Turtle</b> (тасбақа) — экранда сурет салуға арналған кітапхана. Тасбақаға команда бересің, ол жүріп, артынан сызық қалдырады.</p>
+    <ul>
+      <li><code class="inline">import turtle</code> — Turtle кітапханасын қосады.</li>
+      <li><code class="inline">t = turtle.Turtle()</code> — жаңа тасбақа жасайды.</li>
+      <li><code class="inline">t.forward(100)</code> — 100 қадам алға жүреді.</li>
+      <li><code class="inline">t.right(90)</code> — 90 градусқа оңға бұрылады.</li>
+      <li><code class="inline">t.left(45)</code> — 45 градусқа солға бұрылады.</li>
+      <li><code class="inline">t.backward(50)</code> — 50 қадам артқа жүреді.</li>
+      <li><code class="inline">turtle.done()</code> — суретті аяқтайды.</li>
+    </ul>
+    <h4>Мысал</h4>
+    <pre class="code">import turtle
+
+t = turtle.Turtle()
+t.forward(100)   <span class="cm"># 100 қадам алға</span>
+t.right(90)      <span class="cm"># 90 градусқа оңға бұрылу</span>
+t.forward(100)   <span class="cm"># тағы 100 қадам алға</span>
+
+turtle.done()</pre>
+    <p>Бұл код екі қабырғасы бар бұрыш (L әрпі) салады.</p>`,
+  example:{code:`import turtle
+
+t = turtle.Turtle()
+t.forward(100)
+t.right(90)
+t.forward(100)
+
+turtle.done()`},
+  tasks: [
+    { type:'code', title:'№1 тапсырма: «Бірінші суретіңді сал»',
+      hint:'Тасбақаны 120 қадам алға жүргізіп, содан кейін 90 градусқа оңға бұрып, тағы 120 қадам жүргіз.',
+      template:'import turtle\n\nt = turtle.Turtle()\n# осында жаз\n\n',
+      rules:[
+        {re:/import\s+turtle/, msg:'import turtle жазылуы керек'},
+        {re:/Turtle\s*\(/, msg:'turtle.Turtle() жасалуы керек'},
+        {re:/forward\s*\(\s*120\s*\)/, msg:'forward(120) командасы керек'},
+        {re:/right\s*\(\s*90\s*\)/, msg:'right(90) командасы керек'}
+      ]},
+    { type:'choice', title:'№2 тапсырма: «Кодты толықтыр»',
+      hint:'Тасбақаны 100 қадам алға жылжытып, 90 градусқа бұру керек. Дұрыс жолды таңда.',
+      q:'Қай код дұрыс?',
+      options:[
+        {t:'t.forward(100)  /  t.right(90)', ok:true, msg:'Дұрыс! forward — алға, right — оңға бұрылу.'},
+        {t:'t.right(100)  /  t.forward(90)', ok:false, msg:'Жоқ. Мұнда сандар мен командалар шатасқан.'},
+        {t:'t.go(100)  /  t.turn(90)', ok:false, msg:'Жоқ. Мұндай командалар Turtle-де жоқ.'},
+        {t:'forward(100)  /  right(90)', ok:false, msg:'Тасбақа нысанының атын (t.) жазуды ұмытпа.'}
+      ]}
+  ],
+  testId:'t2'
+},
+{
+  id:'py3', num:'3.3', title:'Қозғалыс пен жылдамдықты басқару',
+  goal:'Тасбақаның қозғалысын, бұрылу бұрыштарын және жылдамдығын басқаруды үйрену.',
+  theory:`
+    <h4>Қозғалыс</h4>
+    <ul>
+      <li><code class="inline">t.forward(d)</code> — d қадам алға.</li>
+      <li><code class="inline">t.backward(d)</code> — d қадам артқа.</li>
+      <li><code class="inline">t.goto(x, y)</code> — координатасы (x, y) нүктеге жылжу.</li>
+      <li><code class="inline">t.home()</code> — бастапқы орнына (0, 0) қайту.</li>
+    </ul>
+    <h4>Бұрылу</h4>
+    <ul>
+      <li><code class="inline">t.right(a)</code> — a градусқа оңға (сағат тілімен).</li>
+      <li><code class="inline">t.left(a)</code> — a градусқа солға.</li>
+    </ul>
+    <p>Тасбақаның бастапқы орны — экранның ортасы (0, 0), бағыты — оң жаққа қарай.</p>
+    <h4>Жылдамдық</h4>
+    <p><code class="inline">t.speed(s)</code> — жылдамдықты белгілейді. Мәндер: 1 (өте баяу) … 10 (жылдам), 0 — ең жылдам (анимациясыз).</p>
+    <h4>Геометриялық фигуралар</h4>
+    <ul>
+      <li><b>Шаршы</b>: 4 рет — forward(100), right(90)</li>
+      <li><b>Тең қабырғалы үшбұрыш</b>: 3 рет — forward(100), right(120)</li>
+      <li><b>Тіктөртбұрыш</b>: forward(150), right(90), forward(80), right(90) — екі рет қайталау</li>
+    </ul>`,
+  example:{code:`import turtle
+
+t = turtle.Turtle()
+t.speed(3)
+
+t.forward(100)
+t.left(90)
+t.forward(100)
+
+turtle.done()`},
+  tasks: [
+    { type:'choice', title:'№1 тапсырма: «Мақсатқа жет»',
+      hint:'Тасбақа (0,0) нүктесінде, бағыты оңға. Мақсат — (0, 100) нүктесі (жоғары).',
+      q:'Қандай командалар тізбегі тасбақаны мақсатқа жеткізеді?',
+      options:[
+        {t:'t.left(90)  →  t.forward(100)', ok:true, msg:'Дұрыс! Солға 90° бұрылып, 100 қадам жоғары шығады.'},
+        {t:'t.right(90)  →  t.forward(100)', ok:false, msg:'Оңға бұрылса, тасбақа төмен қарай кетеді.'},
+        {t:'t.forward(100)  →  t.left(90)', ok:false, msg:'Алдымен оңға жүріп кетеді, содан кейін ғана бұрылады.'},
+        {t:'t.backward(100)', ok:false, msg:'Артқа жүрсе, сол жаққа кетеді.'}
+      ]},
+    { type:'code', title:'№2 тапсырма: «Суретті қайтала»',
+      hint:'Шаршы сал: төрт рет 100 қадам алға жүріп, 90 градусқа оңға бұрыл. speed(5) қолдан.',
+      template:'import turtle\n\nt = turtle.Turtle()\nt.speed(5)\n\n# шаршы сал\n\n',
+      rules:[
+        {re:/forward\s*\(/, msg:'forward командасы керек'},
+        {re:/right\s*\(\s*90\s*\)|left\s*\(\s*90\s*\)/, msg:'90 градусқа бұрылу керек'},
+        {re:/speed\s*\(\s*5\s*\)/, msg:'speed(5) жазылуы керек'}
+      ]}
+  ],
+  testId:'t3'
+},
+{
+  id:'py4', num:'3.4', title:'Түс, сызық қалыңдығы және пішін',
+  goal:'Түстерді, сызық қалыңдығын және тасбақа пішінін өзгертуді меңгеру.',
+  theory:`
+    <h4>Негізгі командалар</h4>
+    <ul>
+      <li><code class="inline">t.color("blue")</code> — сызық түсін көк етеді.</li>
+      <li><code class="inline">t.pensize(4)</code> — сызық қалыңдығын 4 етеді.</li>
+      <li><code class="inline">t.shape("turtle")</code> — тасбақаның пішінін өзгертеді (arrow, turtle, circle, square).</li>
+      <li><code class="inline">turtle.bgcolor("lightblue")</code> — экран фонының түсін өзгертеді.</li>
+    </ul>
+    <h4>Фигураны бояу</h4>
+    <ul>
+      <li><code class="inline">t.fillcolor("yellow")</code> — бояу түсін таңдау.</li>
+      <li><code class="inline">t.begin_fill()</code> — бояуды бастау.</li>
+      <li><code class="inline">t.end_fill()</code> — бояуды аяқтау.</li>
+    </ul>
+    <div class="note">💡 <b>Түстердің ағылшынша атауы:</b> red, blue, green, yellow, orange, purple, pink, black, white, brown, cyan, magenta, gray.</div>
+    <h4>Мысал</h4>
+    <pre class="code">import turtle
+
+t = turtle.Turtle()
+t.color("blue")
+t.pensize(4)
+t.forward(100)
+t.left(90)
+t.forward(100)
+
+turtle.done()</pre>`,
+  example:{code:`import turtle
+
+t = turtle.Turtle()
+t.color("blue")
+t.pensize(4)
+t.forward(100)
+t.left(90)
+t.forward(100)
+
+turtle.done()`},
+  tasks: [
+    { type:'code', title:'№1 тапсырма: «Өз суретіңді безендір»',
+      hint:'Қызыл түсті, қалыңдығы 6 сызықпен 150 қадам алға жүр. Тасбақаның пішінін "turtle" етіп қой.',
+      template:'import turtle\n\nt = turtle.Turtle()\n# түс, қалыңдық, пішін\n\n',
+      rules:[
+        {re:/color\s*\(\s*["']red["']\s*\)/, msg:'color("red") болуы керек'},
+        {re:/pensize\s*\(\s*6\s*\)|width\s*\(\s*6\s*\)/, msg:'pensize(6) болуы керек'},
+        {re:/shape\s*\(\s*["']turtle["']\s*\)/, msg:'shape("turtle") болуы керек'},
+        {re:/forward\s*\(\s*150\s*\)/, msg:'forward(150) болуы керек'}
+      ]},
+    { type:'choice', title:'№2 тапсырма: «Түсті фигура жаса»',
+      hint:'Шаршыны сары түспен бояу керек.',
+      q:'Шаршыны дұрыс бояйтын код қайсы?',
+      options:[
+        {t:'t.fillcolor("yellow") → t.begin_fill() → шаршы салу → t.end_fill()', ok:true, msg:'Дұрыс! Бояу түсін беріп, begin_fill мен end_fill арасына фигураны саламыз.'},
+        {t:'t.begin_fill() → t.end_fill() → t.fillcolor("yellow")', ok:false, msg:'Бояу түсін алдын ала беру керек, әрі командалар реті басқа.'},
+        {t:'t.color("yellow") → t.end_fill()', ok:false, msg:'end_fill жалғыз өзі жұмыс істемейді.'},
+        {t:'t.fill() → t.paint("yellow")', ok:false, msg:'Мұндай командалар Turtle-де жоқ.'}
+      ]}
+  ],
+  testId:'t4'
+},
+{
+  id:'py5', num:'3.5', title:'Тармақталу — if және if–else',
+  goal:'Шартты операторларды түсініп, шартқа байланысты әрекет орындауды үйрену.',
+  theory:`
+    <h4>Шарт дегеніміз не?</h4>
+    <p><b>Шарт</b> — ақиқат (True) немесе жалған (False) болуы мүмкін салыстыру. Мысалы: <code class="inline">age > 10</code>.</p>
+    <h4>Салыстыру белгілері</h4>
+    <ul>
+      <li><code class="inline">&gt;</code> — үлкен</li>
+      <li><code class="inline">&lt;</code> — кіші</li>
+      <li><code class="inline">==</code> — тең (тексеру үшін!)</li>
+      <li><code class="inline">!=</code> — тең емес</li>
+      <li><code class="inline">&gt;=</code> — үлкен немесе тең</li>
+      <li><code class="inline">&lt;=</code> — кіші немесе тең</li>
+    </ul>
+    <div class="note">⚠️ <b>Маңызды:</b> мән беру үшін <code class="inline">=</code> (бір таңба), ал салыстыру үшін <code class="inline">==</code> (екі таңба) қолданылады!</div>
+    <h4>if және else</h4>
+    <pre class="code">age = 12
+
+if age &gt;= 10:
+    print("Тапсырманы орындауға болады")
+else:
+    print("Шарт орындалмады")</pre>
+    <p>Алдымен Python <code class="inline">age &gt;= 10</code> шартын тексереді. Шарт ақиқат болса — <b>if</b> блогы, әйтпесе — <b>else</b> блогы орындалады.</p>
+    <div class="note">📏 if/else ішіндегі командалар міндетті түрде <b>шегініспен</b> (4 бос орын) жазылады!</div>`,
+  example:{code:`age = 12
+
+if age >= 10:
+    print("Сен 5-сыныпта оқисың")
+else:
+    print("Шарт орындалмады")`},
+  tasks: [
+    { type:'choice', title:'№1 тапсырма: «Дұрыс тармақты таңда»',
+      hint:'Кодты мұқият оқы.',
+      q:'x = 7. Код: if x > 10: print("A") else: print("B"). Экранда не шығады?',
+      options:[
+        {t:'B', ok:true, msg:'Дұрыс! 7 > 10 шарты жалған, сондықтан else блогы орындалады.'},
+        {t:'A', ok:false, msg:'7 саны 10-нан үлкен емес, сондықтан if блогы орындалмайды.'},
+        {t:'A және B', ok:false, msg:'Тек бір ғана тармақ орындалады.'},
+        {t:'Ештеңе шықпайды', ok:false, msg:'else блогы бар, сондықтан бір нәрсе міндетті түрде шығады.'}
+      ]},
+    { type:'code', title:'№2 тапсырма: «Шартты сурет сал»',
+      hint:'a = 5 деп алайық. Егер a > 3 болса, тасбақа 100 қадам алға жүрсін, әйтпесе 50 қадам алға жүрсін.',
+      template:'import turtle\n\nt = turtle.Turtle()\na = 5\n\nif a > 3:\n    t.forward(100)\nelse:\n    t.forward(50)\n',
+      rules:[
+        {re:/if\s+/, msg:'if операторы керек'},
+        {re:/else\s*:/, msg:'else блогы керек'},
+        {re:/forward\s*\(\s*100\s*\)/, msg:'forward(100) керек'},
+        {re:/forward\s*\(\s*50\s*\)/, msg:'forward(50) керек'}
+      ]}
+  ],
+  testId:'t5'
+},
+{
+  id:'py6', num:'3.6', title:'Қайталау — for циклі',
+  goal:'for циклін және range() функциясын қолданып, қайталанатын әрекеттерді орындау.',
+  theory:`
+    <h4>Қайталау дегеніміз не?</h4>
+    <p><b>Цикл</b> — бір немесе бірнеше команданы бірнеше рет қайталау.</p>
+    <h4>for циклі</h4>
+    <pre class="code">for i in range(4):
+    t.forward(100)
+    t.right(90)</pre>
+    <p>Бұл код <code class="inline">forward(100)</code> және <code class="inline">right(90)</code> командаларын <b>4 рет</b> қайталайды — нәтижесінде шаршы салынады.</p>
+    <h4>range() функциясы</h4>
+    <ul>
+      <li><code class="inline">range(4)</code> → 0, 1, 2, 3</li>
+      <li><code class="inline">range(1, 4)</code> → 1, 2, 3</li>
+      <li><code class="inline">range(0, 10, 2)</code> → 0, 2, 4, 6, 8</li>
+    </ul>
+    <h4>Циклдің артықшылығы</h4>
+    <p>Циклсіз шаршы салу үшін 8 жол код керек. Циклмен — тек 3 жол! Код қысқа, түсінікті және қатесіз болады.</p>
+    <div class="note">📏 Цикл денесі де <b>шегініспен</b> жазылады.</div>`,
+  example:{code:`import turtle
+
+t = turtle.Turtle()
+
+for i in range(4):
+    t.forward(100)
+    t.right(90)
+
+turtle.done()`},
+  tasks: [
+    { type:'choice', title:'№1 тапсырма: «Шаршыны аяқта»',
+      hint:'Шаршының 4 қабырғасы бар.',
+      q:'for i in range(?): — шаршы салу үшін сұрақ белгісінің орнына не жазылады?',
+      options:[
+        {t:'4', ok:true, msg:'Дұрыс! Шаршының 4 қабырғасы бар, сондықтан 4 рет қайталаймыз.'},
+        {t:'3', ok:false, msg:'3 рет қайталаса, үшбұрыш шығады.'},
+        {t:'6', ok:false, msg:'6 рет қайталаса, артық сызықтар салынады.'},
+        {t:'90', ok:false, msg:'90 — бұл бұрылу бұрышы, қайталау саны емес.'}
+      ]},
+    { type:'code', title:'№2 тапсырма: «Геометриялық өрнек жаса»',
+      hint:'for циклін қолданып, 6 рет қайталанатын өрнек сал: forward(120), right(60).',
+      template:'import turtle\n\nt = turtle.Turtle()\nt.speed(0)\n\nfor i in range(6):\n    t.forward(120)\n    t.right(60)\n',
+      rules:[
+        {re:/for\s+\w+\s+in\s+range\s*\(\s*6\s*\)/, msg:'for i in range(6) керек'},
+        {re:/forward\s*\(\s*120\s*\)/, msg:'forward(120) керек'},
+        {re:/right\s*\(\s*60\s*\)/, msg:'right(60) керек'}
+      ]}
+  ],
+  testId:'t6'
+}
+];
+
+/* =========================================================================
+   5. МАЗМҰН ДЕРЕКТЕРІ — ҚҰЖАТ ТАҚЫРЫПТАРЫ
+   ========================================================================= */
+const DOC_TOPICS = [
+{
+  id:'dc1', num:'5.1', title:'Мәтінді өңдеу және форматтау',
+  goal:'Мәтіндік құжат жасап, оны форматтауды үйрену.',
+  theory:`
+    <h4>Мәтіндік құжат дегеніміз не?</h4>
+    <p><b>Мәтіндік құжат</b> — компьютерде жазылған, сақталатын және өңделетін мәтін. Ол <b>мәтіндік редакторда</b> (Microsoft Word, Google Docs) жасалады.</p>
+    <h4>Негізгі мүмкіндіктер</h4>
+    <ul>
+      <li><b>Құжат құру және сақтау</b> — жаңа файл ашып, атын беріп сақтау.</li>
+      <li><b>Мәтінді белгілеу</b> — тінтуірмен немесе пернетақтамен бөліп алу.</li>
+      <li><b>Қаріп (шрифт) және өлшем</b> — Arial, Times New Roman; 12, 14, 18 pt.</li>
+      <li><b>Қалың (B)</b>, <b>көлбеу (I)</b>, <b>асты сызылған (U)</b> мәтін.</li>
+      <li><b>Қаріп түсі</b> — мәтінді түрлі-түсті ету.</li>
+      <li><b>Үлкен/кіші әріптер</b> — РЕГИСТР өзгерту.</li>
+    </ul>
+    <h4>Абзац пен тізім</h4>
+    <ul>
+      <li><b>Туралау</b>: солға, ортаға, оңға, екі жаққа.</li>
+      <li><b>Жоларалық интервал</b> — жолдар арасындағы қашықтық.</li>
+      <li><b>Маркерленген тізім</b> — • белгісімен.</li>
+      <li><b>Нөмірленген тізім</b> — 1, 2, 3 ретімен.</li>
+      <li><b>Көпдеңгейлі тізім</b> — ішкі деңгейлері бар тізім.</li>
+    </ul>
+    <div class="note">💡 Тақырыпты үлкен әріппен және қалың етіп жазса, құжат кәсіби көрінеді.</div>`,
+  tasks:[
+    { type:'choice', title:'№1 тапсырма: «Мәтінді дұрыс форматта»',
+      q:'«Менің мектебім» деген тақырыпты ерекшелеу үшін қандай форматтау қолданамыз?',
+      options:[
+        {t:'Қалың (B) + үлкенірек өлшем + ортаға туралау', ok:true, msg:'Дұрыс! Тақырып әдетте қалың, үлкенірек және ортаға тураланған болады.'},
+        {t:'Көлбеу (I) + кіші өлшем', ok:false, msg:'Тақырып кішкентай болып көрінбей қалады.'},
+        {t:'Асты сызылған (U) + қызыл түс', ok:false, msg:'Бұл қате емес, бірақ тақырып үшін әдеттегі әдіс емес.'},
+        {t:'Форматтаудың қажеті жоқ', ok:false, msg:'Форматтау құжатты түсінікті әрі әдемі етеді.'}
+      ]},
+    { type:'choice', title:'№2 тапсырма: «Құжатты ретке келтір»',
+      q:'Құжаттағы элементтердің дұрыс реті қандай?',
+      options:[
+        {t:'Тақырып → Кіріспе абзац → Тізім → Қорытынды', ok:true, msg:'Дұрыс! Бұл — құжаттың классикалық құрылымы.'},
+        {t:'Тізім → Тақырып → Қорытынды', ok:false, msg:'Тақырып әрқашан басында тұрады.'},
+        {t:'Қорытынды → Тақырып → Тізім', ok:false, msg:'Қорытынды ең соңында болады.'},
+        {t:'Кіріспе → Тақырып → Тізім', ok:false, msg:'Тақырып бірінші болуы керек.'}
+      ]}
+  ],
+  testId:'t7'
+},
+{
+  id:'dc2', num:'5.2', title:'Құжатқа сурет енгізу',
+  goal:'Құжатқа сурет қосуды, өлшемін өзгертуді және дереккөзін көрсетуді үйрену.',
+  theory:`
+    <h4>Суреттің маңызы</h4>
+    <p>Сурет құжатты әдемі етеді, ақпаратты түсінікті жеткізеді.</p>
+    <h4>Сурет қосу жолдары</h4>
+    <ul>
+      <li><b>Компьютердегі файлдан</b> — Кірістіру → Сурет → Файлдан.</li>
+      <li><b>Интернеттен</b> — суретті көшіріп, құжатқа қою.</li>
+      <li><b>Скриншот</b> — экранның көрінісін түсіру (Print Screen).</li>
+    </ul>
+    <h4>Суретпен жұмыс</h4>
+    <ul>
+      <li><b>Өлшемін өзгерту</b> — бұрыштарынан тартып.</li>
+      <li><b>Орналастыру</b> — солға, ортаға, оңға.</li>
+      <li><b>Мәтінді суреттің айналасына орау</b>.</li>
+      <li><b>Сапасын сақтау</b> — сурет бұлыңғыр болмауы керек.</li>
+    </ul>
+    <h4>Авторлық құқық</h4>
+    <div class="note">⚖️ Интернеттегі суреттердің көбісі <b>авторлық құқықпен қорғалған</b>. Оларды пайдаланғанда дереккөзін көрсету керек. Еркін пайдалануға болатын суреттерді іздеу керек.</div>
+    <p><b>Дереккөзді көрсету үлгісі:</b> «Сурет: pixabay.com сайтынан алынды».</p>`,
+  tasks:[
+    { type:'choice', title:'№1 тапсырма: «Құжатқа сурет қос»',
+      q:'Құжатқа компьютердегі суретті қосу үшін қай әрекетті орындаймыз?',
+      options:[
+        {t:'Кірістіру → Сурет → Файлдан → суретті таңдау', ok:true, msg:'Дұрыс! Дәл осылай сурет құжатқа қосылады.'},
+        {t:'Файл → Сақтау', ok:false, msg:'Бұл құжатты сақтайды, сурет қоспайды.'},
+        {t:'Үй → Қаріп өлшемі', ok:false, msg:'Бұл мәтіннің өлшемін өзгертеді.'},
+        {t:'Қарау → Толық экран', ok:false, msg:'Бұл экран режимін өзгертеді.'}
+      ]},
+    { type:'choice', title:'№2 тапсырма: «Суретті дұрыс таңда»',
+      q:'Интернеттен алынған суретті құжатқа қойдың. Дұрыс әрекет қандай?',
+      options:[
+        {t:'Суреттің астына дереккөзін жазу', ok:true, msg:'Дұрыс! Авторлық құқықты құрметтеп, дереккөзді көрсетеміз.'},
+        {t:'Ештеңе жазбай, өз суретім деп көрсету', ok:false, msg:'Бұл — авторлық құқықты бұзу.'},
+        {t:'Суретті өшіріп тастау', ok:false, msg:'Суретті пайдалануға болады, тек дереккөзін көрсету керек.'},
+        {t:'Суретті мүлдем пайдаланбау', ok:false, msg:'Пайдалануға болады — тек дұрыс рәсімдеу керек.'}
+      ]}
+  ],
+  testId:'t8'
+},
+{
+  id:'dc3', num:'5.3', title:'Қарапайым және күрделі кестелер',
+  goal:'Кесте құруды, ұяшықтарды біріктіруді және безендіруді үйрену.',
+  theory:`
+    <h4>Кесте дегеніміз не?</h4>
+    <p><b>Кесте</b> — ақпаратты жолдар мен бағандарға орналастырып көрсету тәсілі.</p>
+    <ul>
+      <li><b>Жол</b> — көлденең қатар.</li>
+      <li><b>Баған</b> — тік қатар.</li>
+      <li><b>Ұяшық</b> — жол мен бағанның қиылысы.</li>
+    </ul>
+    <h4>Қарапайым кесте</h4>
+    <p>Барлық жолдары мен бағандары бірдей болатын кесте.</p>
+    <h4>Күрделі кесте</h4>
+    <p>Кейбір ұяшықтары <b>біріктірілген</b> немесе <b>бөлінген</b> кесте.</p>
+    <ul>
+      <li><b>Ұяшықтарды біріктіру</b> — бірнеше ұяшықты бір үлкен ұяшық ету.</li>
+      <li><b>Ұяшықтарды бөлу</b> — бір ұяшықты бірнеше бөлікке бөлу.</li>
+      <li><b>Шекаралар</b> — кесте сызықтарының түрі мен қалыңдығы.</li>
+      <li><b>Ұяшық фоны</b> — ұяшықты бояу.</li>
+      <li><b>Мәтінді туралау</b> — солға, ортаға, оңға.</li>
+    </ul>
+    <div class="note">💡 Сабақ кестесінде тақырып жолын бөлек түспен бояу әдеттегі тәжірибе.</div>`,
+  tasks:[
+    { type:'choice', title:'№1 тапсырма: «Кестені құрастыр»',
+      q:'Сабақ кестесінде «Дүйсенбі» деген жазу 4 бағанды қамтуы керек. Не істейміз?',
+      options:[
+        {t:'4 ұяшықты таңдап, «Біріктіру» командасын қолданамыз', ok:true, msg:'Дұрыс! Ұяшықтарды біріктіргенде бір үлкен ұяшық пайда болады.'},
+        {t:'4 бөлек ұяшыққа жазамыз', ok:false, msg:'Онда жазу төрт рет қайталанып, әдемі көрінбейді.'},
+        {t:'Жолды өшіреміз', ok:false, msg:'Жол керек, оны өшіруге болмайды.'},
+        {t:'Кестені қайта саламыз', ok:false, msg:'Бұл қажет емес — біріктіру жеткілікті.'}
+      ]},
+    { type:'choice', title:'№2 тапсырма: «Күрделі кестені аяқта»',
+      q:'Біріктірілген ұяшықты қайта бөлу үшін қандай әрекет жасаймыз?',
+      options:[
+        {t:'Ұяшықты таңдап, «Бөлу» (Split) командасын қолданамыз', ok:true, msg:'Дұрыс! Бөлу командасы ұяшықты қайта бөліктерге бөледі.'},
+        {t:'Ұяшықты өшіреміз', ok:false, msg:'Өшірсек, кесте бүлінеді.'},
+        {t:'Жаңа кесте қосамыз', ok:false, msg:'Бұл мәселені шешпейді.'},
+        {t:'Қаріпті үлкейтеміз', ok:false, msg:'Бұл тек мәтінге әсер етеді.'}
+      ]}
+  ],
+  testId:'t9'
+},
+{
+  id:'dc4', num:'5.4', title:'Жасанды интеллектіні жауапкершілікпен пайдалану',
+  goal:'ЖИ-ді дұрыс, адал және қауіпсіз пайдалануды үйрену.',
+  theory:`
+    <h4>Жасанды интеллект дегеніміз не?</h4>
+    <p><b>Жасанды интеллект (ЖИ)</b> — көп деректерден үйреніп, мәтін жазуға, сурет салуға, сұраққа жауап беруге қабілетті жүйе.</p>
+    <h4>ЖИ қалай көмектеседі?</h4>
+    <ul>
+      <li>Мәтін жазуды бастауға көмектеседі.</li>
+      <li>Идеялар мен мысалдар ұсынады.</li>
+      <li>Қиын тақырыпты түсіндіреді.</li>
+    </ul>
+    <h4>⚠️ ЖИ жауабы әрдайым дұрыс па?</h4>
+    <p><b>Жоқ!</b> ЖИ қате ақпарат бере алады. Сондықтан ЖИ жауабын <b>бірнеше дереккөзден тексеру</b> керек.</p>
+    <h4>Жауапты пайдалану ережелері</h4>
+    <ul>
+      <li>✅ Ақпаратты тексеру.</li>
+      <li>✅ Авторлық құқықты сақтау.</li>
+      <li>✅ ЖИ көмегін ашық көрсету (мұғалім талап етсе).</li>
+      <li>✅ Өз ойыңды қосу, өз сөзіңмен қайта жазу.</li>
+      <li>✅ Жеке деректерді (пароль, мекенжай, телефон) қорғау.</li>
+      <li>❌ ЖИ мәтінін тексермей көшіру — <b>плагиат</b>.</li>
+      <li>❌ Басқа адамның жұмысын өз атынан тапсыру.</li>
+      <li>❌ Жеке парольді чатқа жіберу.</li>
+    </ul>
+    <div class="note">🛡️ <b>Плагиат</b> — басқа адамның (немесе ЖИ-дің) жұмысын өзіңдікі етіп көрсету. Бұл — адалдыққа жатпайтын әрекет.</div>`,
+  tasks:[
+    { type:'category', title:'№1 тапсырма: «Дұрыс па, бұрыс па?»',
+      hint:'Әрекетті таңдап, тиісті санатқа басыңыз.',
+      cats:['Жауапты қолдану ✅','Жауапсыз қолдану ❌'],
+      items:[
+        {text:'ЖИ берген мәтінді тексермей көшіру', cat:1},
+        {text:'ЖИ жауабын бірнеше дереккөзден тексеру', cat:0},
+        {text:'Басқа адамның жұмысын өз атынан тапсыру', cat:1},
+        {text:'ЖИ көмегін мұғалімнің талабына сай көрсету', cat:0},
+        {text:'Жеке парольді чатқа жіберу', cat:1},
+        {text:'ЖИ мәтінін өз сөзіңмен қайта жазып, ой қосу', cat:0}
+      ]},
+    { type:'choice', title:'№2 тапсырма: «Мәтінді тексер және жақсарт»',
+      q:'ЖИ былай деп жазды: «Алматы — Қазақстанның ең үлкен қаласы және 1997 жылдан бастап астанасы». Не істейсің?',
+      options:[
+        {t:'Тексеріп, қатені түзетемін: астана — Астана қаласы', ok:true, msg:'Дұрыс! ЖИ қателесуі мүмкін, ақпаратты тексеру — сенің міндетің.'},
+        {t:'Сол күйінде көшіріп, тапсырамын', ok:false, msg:'Қате ақпарат таралады, бұл — жауапсыз әрекет.'},
+        {t:'Мүлдем пайдаланбаймын', ok:false, msg:'ЖИ-ді пайдалануға болады — тек тексеру керек.'},
+        {t:'ЖИ-ге сеніп, ешкімге айтпаймын', ok:false, msg:'Қате ақпаратты жасыру дұрыс емес.'}
+      ]}
+  ],
+  testId:'t10'
+}
+];
+
+/* =========================================================================
+   6. ПРАКТИКАЛЫҚ ЖҰМЫСТАР
+   ========================================================================= */
+const PRACTICE = [
+{id:'p1', mod:'py', title:'Сызық салу', goal:'Тасбақамен қарапайым сызық салуды үйрену.',
+ tools:['Python редакторы','Turtle алаңы'],
+ steps:['import turtle жазу','t = turtle.Turtle() жасау','t.forward(150) жазу','Іске қосу батырмасын басу'],
+ check:'forward(150) командасының болуы', rules:[{re:/import\s+turtle/},{re:/Turtle\s*\(/},{re:/forward\s*\(\s*150\s*\)/}],
+ template:'import turtle\n\nt = turtle.Turtle()\nt.forward(150)\n\nturtle.done()\n'},
+{id:'p2', mod:'py', title:'Шаршы салу', goal:'Төрт қабырғалы шаршы салу.',
+ tools:['Python редакторы'], steps:['Тасбақа жасау','4 рет forward(100) және right(90) орындау'],
+ check:'forward(100) мен right(90) болуы', rules:[{re:/forward\s*\(\s*100\s*\)/},{re:/right\s*\(\s*90\s*\)/}],
+ template:'import turtle\n\nt = turtle.Turtle()\n\nfor i in range(4):\n    t.forward(100)\n    t.right(90)\n\nturtle.done()\n'},
+{id:'p3', mod:'py', title:'Үшбұрыш салу', goal:'Тең қабырғалы үшбұрыш салу.',
+ tools:['Python редакторы'], steps:['3 рет қайталау','forward(120), right(120)'],
+ check:'right(120) болуы', rules:[{re:/forward\s*\(\s*120\s*\)/},{re:/right\s*\(\s*120\s*\)/}],
+ template:'import turtle\n\nt = turtle.Turtle()\n\nfor i in range(3):\n    t.forward(120)\n    t.right(120)\n\nturtle.done()\n'},
+{id:'p4', mod:'py', title:'Түрлі түсті үй салу', goal:'Түстерді қолданып үй салу.',
+ tools:['Python редакторы'], steps:['Қабырғасын салу','Шатырын салу','Түстерді қолдану'],
+ check:'color және goto болуы', rules:[{re:/color\s*\(/},{re:/goto\s*\(|forward\s*\(/},{re:/begin_fill|end_fill|pensize/}],
+ template:'import turtle\n\nt = turtle.Turtle()\nt.speed(5)\nt.color("blue")\nt.pensize(3)\n\n# қабырға\nfor i in range(4):\n    t.forward(120)\n    t.left(90)\n\n# шатыр\nt.penup()\nt.goto(0, 120)\nt.pendown()\nt.color("red")\nt.goto(60, 180)\nt.goto(120, 120)\n\nturtle.done()\n'},
+{id:'p5', mod:'py', title:'if–else арқылы әрекетті таңдау', goal:'Шартқа байланысты әрекет орындау.',
+ tools:['Python редакторы'], steps:['Айнымалы жасау','if жазу','else жазу'],
+ check:'if және else болуы', rules:[{re:/if\s+/},{re:/else\s*:/}],
+ template:'import turtle\n\nt = turtle.Turtle()\n\nball = 8\n\nif ball > 5:\n    t.color("green")\n    t.forward(150)\nelse:\n    t.color("red")\n    t.forward(50)\n\nturtle.done()\n'},
+{id:'p6', mod:'py', title:'for циклі арқылы өрнек жасау', goal:'Циклмен қайталанатын өрнек салу.',
+ tools:['Python редакторы'], steps:['for i in range(...) жазу','Денесін шегініспен жазу'],
+ check:'for және range болуы', rules:[{re:/for\s+\w+\s+in\s+range\s*\(/},{re:/forward\s*\(/},{re:/right\s*\(|left\s*\(/}],
+ template:'import turtle\n\nt = turtle.Turtle()\nt.speed(0)\nt.color("purple")\n\nfor i in range(12):\n    for j in range(4):\n        t.forward(80)\n        t.right(90)\n    t.right(30)\n\nturtle.done()\n'},
+{id:'p7', mod:'doc', title:'«Менің мектебім» құжаты', goal:'Тақырыпты форматтап, шағын құжат жасау.',
+ tools:['Құжат редакторы'], steps:['Тақырыпты қалың әрі үлкен етіп жазу','Абзац қосу','Тізім жасау'],
+ check:'Құжат редакторында орындалады', rules:[]},
+{id:'p8', mod:'doc', title:'Мәтінді форматтау', goal:'Қаріп, өлшем және түстерді қолдану.',
+ tools:['Құжат редакторы'], steps:['Мәтінді белгілеу','B/I/U қолдану','Түс таңдау'], check:'', rules:[]},
+{id:'p9', mod:'doc', title:'Құжатқа сурет енгізу', goal:'Суретті құжатқа қосып, өлшемін өзгерту.',
+ tools:['Құжат редакторы'], steps:['Сурет қосу батырмасын басу','Сурет таңдау','Өлшемін өзгерту'], check:'', rules:[]},
+{id:'p10', mod:'doc', title:'Апталық сабақ кестесін құрастыру', goal:'Кесте редакторында сабақ кестесін жасау.',
+ tools:['Кесте редакторы'], steps:['4 баған, 6 жол жасау','Пәндерді енгізу','Тақырып жолын бояу'], check:'', rules:[]},
+{id:'p11', mod:'doc', title:'Ұяшықтарды біріктіру және бояу', goal:'Күрделі кесте жасау.',
+ tools:['Кесте редакторы'], steps:['Ұяшықтарды таңдау','Біріктіру батырмасын басу','Фон түсін таңдау'], check:'', rules:[]},
+{id:'p12', mod:'doc', title:'ЖИ мәтінін тексеру және өңдеу', goal:'ЖИ мәтінін тексеріп, өз сөзіңмен жазу.',
+ tools:['Құжат редакторы'], steps:['Мәтінді оқу','Қателерді табу','Өз сөзіңмен қайта жазу'], check:'', rules:[]}
+];
+
+/* =========================================================================
+   7. ТЕСТ СҰРАҚТАРЫ (10 тақырып × 10 сұрақ = 100)
+   ========================================================================= */
+const TESTS = {
+t1:{title:'Алгоритмдер және ақылды жүйелер', qs:[
+['Алгоритм дегеніміз не?',['Әрекеттердің нақты ретпен орындалатын тізбегі','Компьютердің бағасы','Сурет салу құралы','Интернет жылдамдығы'],0,'Алгоритм — белгілі бір ретпен орындалатын нақты әрекеттер тізбегі.'],
+['Алгоритмді кім орындайды?',['Орындаушы','Мұғалім','Принтер қағазы','Интернет'],0,'Алгоритмді орындаушы (адам, робот, компьютер) орындайды.'],
+['Команда дегеніміз не?',['Орындаушыға берілетін нақты тапсырма','Ғимараттың атауы','Суреттің түсі','Файл өлшемі'],0,'Команда — орындаушыға берілетін нақты тапсырма.'],
+['Рецепт бойынша тамақ дайындау — бұл қандай жүйе?',['Нақты ережелермен жұмыс істейтін алгоритм','Деректерді талдайтын ақылды жүйе','Сурет өңдеу бағдарламасы','Ойын консолі'],0,'Рецепт — нақты қадамдардан тұратын алгоритм.'],
+['Бағдаршамның жұмысы қандай жүйе?',['Нақты ережеге негізделген алгоритм','Ақылды жүйе','Мәтіндік редактор','Кесте редакторы'],0,'Бағдаршам белгіленген уақыт ережесімен жұмыс істейді.'],
+['Суреттегі мысықты танитын қосымша — бұл:',['Деректерді талдайтын ақылды жүйе','Қарапайым алгоритм','Мәтіндік редактор','Калькулятор'],0,'Ол суретті талдап, нысанды таниды — бұл ақылды жүйе.'],
+['Ақылды жүйенің алгоритмнен басты айырмашылығы неде?',['Ол деректерді талдап, өзі шешім қабылдай алады','Ол әлдеқайда қымбат','Ол тек сурет салады','Ол интернетсіз жұмыс істемейді'],0,'Ақылды жүйе үйреніп, жаңа жағдайда шешім қабылдай алады.'],
+['Бейне ұсынатын жүйе қалай жұмыс істейді?',['Пайдаланушының әрекеттерін талдап, ұсыныс жасайды','Кездейсоқ бейне таңдайды','Тек жаңа бейнелерді көрсетеді','Барлық бейнені бірдей көрсетеді'],0,'Ол қарау тарихын талдап, ұсыныс жасайды.'],
+['Алгоритмнің қасиеті — қадамдарға бөлінуі. Бұл:',['Дискреттілік','Түстілік','Жылдамдық','Қымбаттық'],0,'Алгоритм қадамдарға бөлінеді — бұл дискреттілік қасиеті.'],
+['Қайсысы алгоритмге жатады?',['Тіс тазалау: щетканы ал → пастаны жақ → тістерді тазала → шаю','Мысықты танитын қосымша','Ән ұсынатын қосымша','Аударма жасайтын ЖИ'],0,'Бұл — нақты ретпен орындалатын әрекеттер тізбегі.']
+]},
+t2:{title:'Python және Turtle ортасы', qs:[
+['Python дегеніміз не?',['Бағдарламалау тілі','Мәтіндік редактор','Ойын','Браузер'],0,'Python — бағдарламалау тілі.'],
+['Turtle кітапханасы қалай қосылады?',['import turtle','open turtle','start turtle','load turtle'],0,'Кітапхана import turtle арқылы қосылады.'],
+['t = turtle.Turtle() не істейді?',['Жаңа тасбақа нысанын жасайды','Суретті сақтайды','Терезені жабады','Түсті өзгертеді'],0,'Бұл команда тасбақа нысанын жасайды.'],
+['t.forward(100) нені білдіреді?',['100 қадам алға жүру','100 градусқа бұрылу','100 рет қайталау','100 түс ауыстыру'],0,'forward — алға жүру командасы.'],
+['t.right(90) нені білдіреді?',['90 градусқа оңға бұрылу','90 қадам алға жүру','90 рет қайталау','90 түсті таңдау'],0,'right — оңға бұрылу командасы.'],
+['Программаның соңында әдетте не жазылады?',['turtle.done()','turtle.end()','turtle.stop()','turtle.close()'],0,'turtle.done() суретті аяқтайды.'],
+['t.left(45) нені білдіреді?',['45 градусқа солға бұрылу','45 қадам алға жүру','45 градусқа оңға бұрылу','45 рет қайталау'],0,'left — солға бұрылу командасы.'],
+['t.backward(50) нені білдіреді?',['50 қадам артқа жүру','50 қадам алға жүру','50 градусқа бұрылу','50 рет қайталау'],0,'backward — артқа жүру командасы.'],
+['Python бағдарламасы қай жерден бастап орындалады?',['Бірінші жолдан','Соңғы жолдан','Ортасынан','Кездейсоқ жерден'],0,'Программа жоғарыдан төмен қарай орындалады.'],
+['Turtle терезесінде не көрінеді?',['Тасбақа және оның сызған сызығы','Тек мәтін','Тек сандар','Ештеңе көрінбейді'],0,'Тасбақа қозғалып, артынан сызық қалдырады.']
+]},
+t3:{title:'Қозғалыс пен жылдамдық', qs:[
+['t.speed(3) нені білдіреді?',['Жылдамдықты 3 етіп қою','3 қадам жүру','3 рет қайталау','3 градусқа бұрылу'],0,'speed — жылдамдықты белгілейді.'],
+['t.goto(100, 50) нені істейді?',['Тасбақаны (100, 50) нүктесіне жылжытады','100 қадам алға жүргізеді','50 градусқа бұрады','Түсті өзгертеді'],0,'goto — белгілі координатаға жылжытады.'],
+['Тасбақаның бастапқы орны қандай?',['(0, 0), бағыты оңға','(100, 100), бағыты жоғары','(50, 0), бағыты солға','(0, 100), бағыты төмен'],0,'Тасбақа экран ортасында (0,0) тұрады, бағыты оңға.'],
+['t.forward(-50) нені білдіреді?',['50 қадам артқа жүру','50 қадам алға жүру','50 градусқа бұрылу','Қате шығарады'],0,'Теріс сан артқа жүруді білдіреді.'],
+['right(90) мен left(90) айырмашылығы неде?',['Бұрылу бағытында','Қашықтықта','Түсте','Жылдамдықта'],0,'right — оңға, left — солға бұрылады.'],
+['Шаршы салу үшін қандай бұрышқа бұрылу керек?',['90 градус','120 градус','60 градус','180 градус'],0,'Шаршының бұрышы 90 градус.'],
+['Тең қабырғалы үшбұрыш салу үшін қандай бұрыш керек?',['120 градус','90 градус','60 градус','45 градус'],0,'Үшбұрыш салу үшін 120 градусқа бұрыламыз.'],
+['speed(0) нені білдіреді?',['Ең жылдам (анимациясыз)','Ең баяу','Тасбақа тоқтайды','Жылдамдық өзгермейді'],0,'speed(0) — ең жылдам режим.'],
+['Тасбақаның бағытын өзгертетін командалар қайсы?',['right() және left()','forward() және backward()','goto() және home()','speed() және shape()'],0,'right мен left бағытты өзгертеді.'],
+['Тасбақаны бастапқы орнына қайтаратын команда:',['t.home()','t.goto(0)','t.back()','t.reset()'],0,'home() тасбақаны (0,0) нүктесіне қайтарады.']
+]},
+t4:{title:'Түс, сызық қалыңдығы және пішін', qs:[
+['Сызық түсін өзгертетін команда:',['t.color("red")','t.bgcolor("red")','t.shape("red")','t.speed("red")'],0,'color — сызық түсін өзгертеді.'],
+['Экран фонының түсін өзгертетін команда:',['turtle.bgcolor("yellow")','t.color("yellow")','t.pensize("yellow")','t.fill("yellow")'],0,'bgcolor — фон түсін өзгертеді.'],
+['Сызық қалыңдығын өзгертетін команда:',['t.pensize(5)','t.color(5)','t.speed(5)','t.width(5, 2)'],0,'pensize — сызық қалыңдығын белгілейді.'],
+['Тасбақаның пішінін өзгертетін команда:',['t.shape("turtle")','t.color("turtle")','t.size("turtle")','t.look("turtle")'],0,'shape — тасбақаның көрінісін өзгертеді.'],
+['Фигураны бояуды бастайтын команда:',['t.begin_fill()','t.start_fill()','t.fill_now()','t.paint()'],0,'begin_fill — бояуды бастайды.'],
+['Фигураны бояуды аяқтайтын команда:',['t.end_fill()','t.stop_fill()','t.close_fill()','t.finish()'],0,'end_fill — бояуды аяқтайды.'],
+['pensize(1) нені білдіреді?',['Жіңішке сызық','Қалың сызық','Түрлі-түсті сызық','Үзік сызық'],0,'1 — ең жіңішке сызық.'],
+['t.color("blue") нені істейді?',['Сызықты көк түске бояйды','Фонды көк етеді','Тасбақаны көк етеді','Мәтінді көк етеді'],0,'color сызық түсін өзгертеді.'],
+['Фигураны бояу үшін қандай командалар қажет?',['fillcolor, begin_fill, end_fill','color, speed, shape','goto, home, forward','penup, pendown'],0,'Осы үш команда бояу үшін қолданылады.'],
+['t.shape("circle") нені өзгертеді?',['Тасбақаның көрінісін','Сызық түсін','Сызық қалыңдығын','Жылдамдықты'],0,'shape тасбақаның пішінін өзгертеді.']
+]},
+t5:{title:'if–else тармақталуы', qs:[
+['Шарт дегеніміз не?',['Ақиқат немесе жалған болуы мүмкін салыстыру','Командалар тізбегі','Түстер жиынтығы','Сандар қатары'],0,'Шарт — True немесе False болатын салыстыру.'],
+['if операторы нені тексереді?',['Шарттың ақиқат немесе жалған екенін','Түсті','Жылдамдықты','Файл өлшемін'],0,'if шартты тексереді.'],
+['else блогы қашан орындалады?',['Шарт жалған болғанда','Шарт ақиқат болғанда','Әрқашан','Ешқашан'],0,'else — шарт орындалмағанда іске қосылады.'],
+['`==` белгісі нені білдіреді?',['Теңдікті тексереді','Мән береді','Қосады','Азайтады'],0,'== екі мәнді салыстырады.'],
+['`>` белгісі нені білдіреді?',['Үлкен','Кіші','Тең','Тең емес'],0,'> — үлкен белгісі.'],
+['x = 7. Код: if x > 10: print("A") else: print("B"). Не шығады?',['B','A','A және B','Ештеңе'],0,'7 > 10 жалған, сондықтан else блогы орындалады.'],
+['Шарттың нәтижесі қандай болады?',['True немесе False','Тек сан','Тек әріп','Түс'],0,'Шарттың нәтижесі — ақиқат (True) немесе жалған (False).'],
+['`!=` белгісі нені білдіреді?',['Тең емес','Тең','Үлкен','Кіші'],0,'!= — тең емес белгісі.'],
+['if ішіндегі командалар қалай жазылады?',['Шегініспен','Жақша ішінде','Үлкен әріппен','Үтірмен'],0,'Блок ішіндегі командалар шегініспен жазылады.'],
+['if–else құрылымында неше негізгі тармақ бар?',['2','1','3','4'],0,'if–else құрылымында екі тармақ бар: ақиқат және жалған.']
+]},
+t6:{title:'for циклі', qs:[
+['Цикл дегеніміз не?',['Командаларды бірнеше рет қайталау','Команданы бір рет орындау','Түсті өзгерту','Файлды сақтау'],0,'Цикл — қайталанатын әрекет.'],
+['for i in range(4): — неше рет қайталанады?',['4 рет','3 рет','5 рет','1 рет'],0,'range(4) төрт мән береді: 0,1,2,3.'],
+['range(5) қандай сандарды береді?',['0,1,2,3,4','1,2,3,4,5','0,1,2,3,4,5','5,4,3,2,1'],0,'range(5) нөлден бастап 4-ке дейін береді.'],
+['Шаршы салу үшін цикл неше рет қайталануы керек?',['4','3','5','2'],0,'Шаршының 4 қабырғасы бар.'],
+['Циклдің басты артықшылығы неде?',['Код қысқа әрі түсінікті болады','Код ұзарады','Түстер көбейеді','Жылдамдық артады'],0,'Цикл қайталанатын кодты қысқартады.'],
+['range(1, 4) қандай сандарды береді?',['1,2,3','0,1,2,3','1,2,3,4','2,3,4'],0,'range(1,4) — 1-ден 3-ке дейін.'],
+['Үшбұрыш салу үшін цикл неше рет қайталануы керек?',['3','4','5','6'],0,'Үшбұрыштың 3 қабырғасы бар.'],
+['Цикл денесі қалай жазылады?',['Шегініспен','Жақша ішінде','Үлкен әріппен','Үтірмен'],0,'Цикл денесі шегініспен жазылады.'],
+['for i in range(3): t.forward(100); t.right(120) — не салынады?',['Үшбұрыш','Шаршы','Шеңбер','Сызық'],0,'3 қайталау, 120 градус — үшбұрыш шығады.'],
+['Цикл ішіндегі қайталанатын бөлік қалай аталады?',['Цикл денесі','Цикл басы','Цикл соңы','Шарт'],0,'Қайталанатын бөлік — цикл денесі.']
+]},
+t7:{title:'Мәтінді өңдеу және форматтау', qs:[
+['Мәтіндік құжат дегеніміз не?',['Компьютерде жазылған және өңделетін мәтін','Сурет','Бейне','Музыка'],0,'Мәтіндік құжат — мәтіннен тұратын файл.'],
+['Қалың қаріптің батырмасы қандай әріппен белгіленеді?',['B','I','U','C'],0,'B — Bold (қалың).'],
+['Көлбеу қаріптің батырмасы қандай әріппен белгіленеді?',['I','B','U','A'],0,'I — Italic (көлбеу).'],
+['Асты сызылған мәтіннің батырмасы:',['U','B','I','S'],0,'U — Underline (асты сызылған).'],
+['Қаріп өлшемі қандай өлшеммен беріледі?',['pt (пункт)','kg (килограмм)','km (километр)','sec (секунд)'],0,'Қаріп өлшемі пунктпен (pt) өлшенеді.'],
+['Туралау дегеніміз не?',['Мәтінді солға, ортаға, оңға орналастыру','Мәтінді өшіру','Мәтінді көшіру','Мәтінді бояу'],0,'Туралау — мәтіннің орналасу тәсілі.'],
+['Маркерленген тізім қандай белгімен белгіленеді?',['•','1.','a)','#'],0,'Маркерленген тізім • белгісімен беріледі.'],
+['Нөмірленген тізім қандай ретпен жазылады?',['1, 2, 3','•, •, •','a, b, c','+, -, *'],0,'Нөмірленген тізім сандармен беріледі.'],
+['Жоларалық интервал дегеніміз не?',['Жолдар арасындағы қашықтық','Әріптер арасындағы қашықтық','Сөздер арасындағы қашықтық','Беттер арасындағы қашықтық'],0,'Жоларалық интервал — жолдар арасы.'],
+['Құжатты сақтау үшін қандай пернелер комбинациясы қолданылады?',['Ctrl + S','Ctrl + P','Ctrl + C','Ctrl + X'],0,'Ctrl + S — сақтау.']
+]},
+t8:{title:'Құжатқа сурет енгізу', qs:[
+['Құжатқа компьютердегі суретті қосу жолы:',['Кірістіру → Сурет → Файлдан','Файл → Сақтау','Үй → Қаріп','Қарау → Экран'],0,'Сурет Кірістіру мәзірі арқылы қосылады.'],
+['Скриншот дегеніміз не?',['Экран көрінісінің суреті','Мәтіндік файл','Дыбыс жазбасы','Кесте'],0,'Скриншот — экранның суреті.'],
+['Суреттің өлшемін қалай өзгертеміз?',['Бұрышынан тартып','Мәтінді бояп','Қаріпті өзгертіп','Бетті бұрып'],0,'Сурет бұрыштарынан тартып өлшемін өзгертеміз.'],
+['Авторлық құқық дегеніміз не?',['Автордың өз туындысына құқығы','Интернет жылдамдығы','Файл өлшемі','Бағдарлама тілі'],0,'Авторлық құқық автордың жұмысын қорғайды.'],
+['Интернеттен алынған суретті пайдаланғанда не істеу керек?',['Дереккөзін көрсету','Өз атын жазу','Ешкімге айтпау','Суретті өшіру'],0,'Дереккөзді көрсету — авторлық құқықты құрметтеу.'],
+['Интернеттегі суретті құжатқа қою үшін:',['Көшіріп, құжатқа қою','Тек қарап шығу','Жүктеп алып, басқа жерге сақтау','Суретті өзгерту'],0,'Көшіріп, құжатқа қоюға болады.'],
+['Сурет сапасы неге байланысты?',['Ажыратымдылыққа (пиксель санына)','Мәтін өлшеміне','Қаріп түсіне','Бет санына'],0,'Пиксель саны көп болса, сапа жоғары.'],
+['Мәтінді суреттің айналасына орау дегеніміз не?',['Мәтіннің суретті айнала орналасуы','Мәтінді өшіру','Суретті кішірейту','Суретті бояу'],0,'Бұл — мәтіннің суретті айнала жүруі.'],
+['Басқа адамның суретін рұқсатсыз пайдалану:',['Авторлық құқықты бұзу','Дұрыс әрекет','Қалыпты жағдай','Заңды әрекет'],0,'Бұл авторлық құқықты бұзады.'],
+['Суретті құжатқа қоюдың дұрыс реті:',['Кірістіру → Сурет → таңдау → өлшемін реттеу','Сурет → Кірістіру → жою','Сақтау → Сурет → Кірістіру','Бояу → Сурет → Сақтау'],0,'Алдымен қосамыз, содан кейін өлшемін реттейміз.']
+]},
+t9:{title:'Қарапайым және күрделі кестелер', qs:[
+['Кесте дегеніміз не?',['Ақпаратты жолдар мен бағандарға орналастыру','Мәтін түрі','Сурет түрі','Дыбыс түрі'],0,'Кесте ақпаратты жолдар мен бағандарға бөледі.'],
+['Кестедегі көлденең қатар қалай аталады?',['Жол','Баған','Ұяшық','Бет'],0,'Көлденең қатар — жол.'],
+['Кестедегі тік қатар қалай аталады?',['Баған','Жол','Ұяшық','Шекара'],0,'Тік қатар — баған.'],
+['Жол мен бағанның қиылысы қалай аталады?',['Ұяшық','Бет','Абзац','Тізім'],0,'Қиылыс — ұяшық.'],
+['Ұяшықтарды біріктіру дегеніміз не?',['Бірнеше ұяшықты бір үлкен ұяшық ету','Ұяшықты өшіру','Ұяшықты бояу','Ұяшыққа мәтін жазу'],0,'Біріктіру бірнеше ұяшықты біріктіреді.'],
+['Ұяшықтарды бөлу дегеніміз не?',['Бір ұяшықты бірнеше бөлікке бөлу','Ұяшықты бояу','Ұяшықты жою','Жол қосу'],0,'Бөлу — бір ұяшықты бөлшектеу.'],
+['Шекаралар дегеніміз не?',['Кесте сызықтары','Кесте мәтіні','Кесте түсі','Кесте өлшемі'],0,'Шекаралар — кестенің сызықтары.'],
+['Ұяшық фонын өзгерту нені білдіреді?',['Ұяшықты бояу','Ұяшықты өшіру','Ұяшықты біріктіру','Ұяшыққа сурет қою'],0,'Фон — ұяшықтың артқы түсі.'],
+['Кестедегі мәтінді туралау дегеніміз:',['Мәтінді солға, ортаға, оңға орналастыру','Мәтінді өшіру','Мәтінді көшіру','Мәтінді бояу'],0,'Туралау — мәтіннің ұяшықта орналасуы.'],
+['Күрделі кесте дегеніміз не?',['Біріктірілген немесе бөлінген ұяшықтары бар кесте','Тек түрлі-түсті кесте','Үлкен кесте','Кішкентай кесте'],0,'Күрделі кестеде ұяшықтар біріктірілген болады.']
+]},
+t10:{title:'ЖИ-ді жауапкершілікпен пайдалану', qs:[
+['Жасанды интеллект дегеніміз не?',['Деректерден үйреніп, шешім қабылдайтын жүйе','Калькулятор','Принтер','Флеш жады'],0,'ЖИ деректерден үйренеді.'],
+['ЖИ жауабы әрдайым дұрыс па?',['Жоқ, қате болуы мүмкін','Иә, әрдайым дұрыс','Тек сандарда дұрыс','Тек суретте дұрыс'],0,'ЖИ қателесуі мүмкін, тексеру керек.'],
+['Плагиат дегеніміз не?',['Басқаның жұмысын өзіңдікі етіп көрсету','Мәтінді тексеру','Дереккөз көрсету','Өз сөзіңмен жазу'],0,'Плагиат — ұрлықтың бір түрі.'],
+['ЖИ көмегін пайдаланғаныңды қалай көрсетесің?',['Мұғалімнің талабына сай ашық жазу','Жасырып қою','Ешкімге айтпау','Өз жұмысым деп көрсету'],0,'Ашық көрсету — адалдық белгісі.'],
+['Жеке деректерді қорғау дегеніміз:',['Пароль, телефон, мекенжайды бөліспеу','Барлығына айту','Чатқа жіберу','Интернетке жариялау'],0,'Жеке деректерді қорғау — қауіпсіздік негізі.'],
+['ЖИ ұсынған мәтінді алғанда бірінші не істейсің?',['Тексересің','Көшіресің','Жоясың','Сатасың'],0,'Тексеру — бірінші қадам.'],
+['Авторлық құқықты сақтау дегеніміз:',['Автордың еңбегін құрметтеу','Мәтінді көшіру','Суретті өзгерту','Дереккөзді жасыру'],0,'Авторлық құқық — автор еңбегін қорғайды.'],
+['Қайсысы дұрыс әрекет?',['ЖИ мәтінін оқып, өз сөзіңмен қайта жазу','ЖИ мәтінін тексермей көшіру','Басқаның жұмысын өз атынан тапсыру','Парольді чатқа жіберу'],0,'Өз сөзіңмен қайта жазу — дұрыс әрекет.'],
+['Қайсысы бұрыс әрекет?',['ЖИ бергенді тексермей көшіру','Дереккөз көрсету','Ақпаратты тексеру','Өз ойыңды қосу'],0,'Тексермей көшіру — жауапсыз әрекет.'],
+['Жауапты цифрлық мінез-құлық дегеніміз:',['Интернетте адал, қауіпсіз және құрметпен әрекет ету','Көп уақыт ойнау','Барлығын бөлісу','Ешкіммен сөйлеспеу'],0,'Бұл — цифрлық әлемдегі дұрыс мінез-құлық.']
+]}
+};
+
+/* ҚОРЫТЫНДЫ ТЕСТ — 30 сұрақ */
+const FINAL_QS = [
+['Алгоритм дегеніміз не?',['Әрекеттердің нақты ретпен орындалатын тізбегі','Сурет салу','Мәтін жазу','Дыбыс жазу'],0,'Алгоритм — реттелген әрекеттер тізбегі.'],
+['Turtle кітапханасы қалай қосылады?',['import turtle','open turtle','run turtle','start turtle'],0,'import turtle командасымен қосылады.'],
+['t.forward(100) нені білдіреді?',['100 қадам алға жүру','100 градусқа бұрылу','100 рет қайталау','100 түс'],0,'forward — алға жүру.'],
+['t.right(90) нені білдіреді?',['90 градусқа оңға бұрылу','90 қадам алға','90 рет қайталау','90 градусқа солға'],0,'right — оңға бұрылу.'],
+['Шаршы салу үшін қандай бұрыш керек?',['90 градус','120 градус','60 градус','45 градус'],0,'Шаршының бұрышы 90°.'],
+['Сызық түсін өзгертетін команда:',['t.color("red")','t.bgcolor("red")','t.shape("red")','t.speed("red")'],0,'color — сызық түсі.'],
+['Сызық қалыңдығын өзгертетін команда:',['t.pensize(4)','t.color(4)','t.speed(4)','t.shape(4)'],0,'pensize — қалыңдық.'],
+['Фигураны бояуды бастайтын команда:',['t.begin_fill()','t.start()','t.paint()','t.fill_now()'],0,'begin_fill — бояуды бастау.'],
+['for i in range(4): неше рет қайталанады?',['4','3','5','1'],0,'range(4) — 0,1,2,3.'],
+['range(1, 5) қандай сандарды береді?',['1,2,3,4','1,2,3,4,5','0,1,2,3,4','2,3,4,5'],0,'1-ден 4-ке дейін.'],
+['else блогы қашан орындалады?',['Шарт жалған болғанда','Шарт ақиқат болғанда','Әрқашан','Ешқашан'],0,'else — шарт орындалмағанда.'],
+['`==` белгісі нені білдіреді?',['Теңдікті тексереді','Мән береді','Қосады','Азайтады'],0,'== — салыстыру.'],
+['Тасбақаның бастапқы орны қандай?',['(0, 0), бағыты оңға','(100, 100)','(50, 50)','(0, 100)'],0,'Бастапқы орын — экран ортасы.'],
+['t.goto(50, 80) нені істейді?',['Тасбақаны (50, 80) нүктесіне жылжытады','50 қадам алға жүргізеді','80 градусқа бұрады','Түсті өзгертеді'],0,'goto — координатаға жылжу.'],
+['speed(0) нені білдіреді?',['Ең жылдам режим','Ең баяу режим','Тоқтау','Орташа жылдамдық'],0,'speed(0) — ең жылдам.'],
+['Фигураны бояуды аяқтайтын команда:',['t.end_fill()','t.stop()','t.close()','t.done()'],0,'end_fill — бояуды аяқтау.'],
+['Мәтіндік құжат дегеніміз не?',['Компьютерде жазылған және өңделетін мәтін','Сурет','Бейне','Дыбыс'],0,'Мәтіндік құжат — мәтін файлы.'],
+['Қалың қаріптің батырмасы:',['B','I','U','C'],0,'B — Bold.'],
+['Көлбеу қаріптің батырмасы:',['I','B','U','A'],0,'I — Italic.'],
+['Асты сызылған мәтіннің батырмасы:',['U','B','I','S'],0,'U — Underline.'],
+['Жол мен бағанның қиылысы қалай аталады?',['Ұяшық','Жол','Баған','Бет'],0,'Қиылыс — ұяшық.'],
+['Ұяшықтарды біріктіру дегеніміз не?',['Бірнеше ұяшықты бір үлкен ұяшық ету','Ұяшықты өшіру','Ұяшықты бояу','Мәтін жазу'],0,'Біріктіру — бір үлкен ұяшық жасау.'],
+['Скриншот дегеніміз не?',['Экран көрінісінің суреті','Мәтіндік файл','Дыбыс жазбасы','Кесте'],0,'Скриншот — экран суреті.'],
+['Авторлық құқық дегеніміз не?',['Автордың өз туындысына құқығы','Интернет жылдамдығы','Файл өлшемі','Бағдарлама'],0,'Авторлық құқық авторды қорғайды.'],
+['Плагиат дегеніміз не?',['Басқаның жұмысын өзіңдікі етіп көрсету','Мәтінді тексеру','Дереккөз көрсету','Өз сөзіңмен жазу'],0,'Плагиат — жат жұмысты иемдену.'],
+['ЖИ жауабы әрдайым дұрыс па?',['Жоқ, қате болуы мүмкін','Иә','Тек сандарда','Тек мәтінде'],0,'ЖИ қателесуі мүмкін.'],
+['Жеке деректерді қорғау дегеніміз:',['Парольді бөліспеу','Барлығына айту','Чатқа жіберу','Жариялау'],0,'Пароль — құпия.'],
+['Циклдің басты артықшылығы:',['Код қысқарады','Код ұзарады','Түстер көбейеді','Жылдамдық артады'],0,'Цикл қайталанатын кодты қысқартады.'],
+['Үшбұрыш салу үшін қандай бұрыш керек?',['120 градус','90 градус','60 градус','45 градус'],0,'Үшбұрыш үшін 120°.'],
+['Қайсысы дұрыс әрекет?',['ЖИ мәтінін тексеріп, өз сөзіңмен жазу','Тексермей көшіру','Басқаның жұмысын иемдену','Парольді бөлісу'],0,'Тексеру және өз сөзіңмен жазу — дұрыс.']
+];
+
+/* ЖЕТІСТІКТЕР */
+const ACHIEVEMENTS = [
+  {id:'a1', ico:'💻', name:'Алғашқы код', desc:'Python кодын алғаш іске қосу'},
+  {id:'a2', ico:'🎨', name:'Turtle суретшісі', desc:'Бірінші суретті салу'},
+  {id:'a3', ico:'🔁', name:'Цикл шебері', desc:'for циклімен сурет жасау'},
+  {id:'a4', ico:'📄', name:'Құжат дизайнері', desc:'Форматталған құжат жасау'},
+  {id:'a5', ico:'📊', name:'Кесте шебері', desc:'Кесте тапсырмасын аяқтау'},
+  {id:'a6', ico:'🛡️', name:'Цифрлық этика қорғаушысы', desc:'Этика тестін орындау'}
+];
+
+/* =========================================================================
+   8. НАВИГАЦИЯ
+   ========================================================================= */
+const NAV = [
+  {r:'/home', t:'🏠 Басты бет'},
+  {r:'/python', t:'🐍 Python және Turtle'},
+  {r:'/editor', t:'⌨️ Python редакторы'},
+  {r:'/practice', t:'🛠️ Практикалық жұмыстар'},
+  {r:'/docs', t:'📄 Мәтіндік құжаттар'},
+  {r:'/doceditor', t:'✍️ Құжат редакторы'},
+  {r:'/tables', t:'📊 Кесте редакторы'},
+  {r:'/tests', t:'📝 Тақырыптық тесттер'},
+  {r:'/final', t:'🏁 Қорытынды тест'},
+  {r:'/results', t:'📈 Менің нәтижелерім'}
+];
+
+function buildNav(){
+  const nav = $('#mainnav');
+  nav.innerHTML = NAV.map(n => `<a href="#${n.r}" data-r="${n.r}">${n.t}</a>`).join('');
+}
+function markNav(){
+  const cur = location.hash.slice(1) || '/home';
+  $$('#mainnav a').forEach(a => {
+    const r = a.dataset.r;
+    a.classList.toggle('active', cur === r || (r !== '/home' && cur.startsWith(r)));
+  });
+}
+
+/* =========================================================================
+   9. БЕТТЕР
+   ========================================================================= */
+
+/* ---------- Басты бет ---------- */
+function pageHome(){
+  const d = Store.data;
+  app.innerHTML = `
+  <section class="hero">
+    <h2>DIGITAL LAB</h2>
+    <p class="slogan">Код жаз. Сурет сал. Құжат жаса. Цифрлық әлемді зертте!</p>
+    <div class="btn-row">
+      <a class="btn" href="#/python">🚀 Оқуды бастау</a>
+      <a class="btn cy" href="#/editor">⌨️ Python редакторын ашу</a>
+      <a class="btn ye" href="#/doceditor">✍️ Құжаттар зертханасын ашу</a>
+    </div>
+  </section>
+
+  <div class="grid g2">
+    <button class="module-card py" data-go="#/python">
+      <h3>1-модуль · Python Creative</h3>
+      <p style="opacity:.95">Бағдарламалаудың негіздері мен Turtle графикасы</p>
+      <ul>
+        <li>Алгоритмдер және ақылды жүйелер</li>
+        <li>Python және Turtle кітапханасы</li>
+        <li>Қозғалыс пен жылдамдық</li>
+        <li>Түс, сызық қалыңдығы және пішін</li>
+        <li>Шартты операторлар (if–else)</li>
+        <li>Қайталау — for циклі</li>
+      </ul>
+    </button>
+    <button class="module-card doc" data-go="#/docs">
+      <h3>2-модуль · Digital Documents</h3>
+      <p style="opacity:.95">Мәтіндік құжаттар және цифрлық этика</p>
+      <ul>
+        <li>Мәтінді өңдеу және форматтау</li>
+        <li>Құжатқа сурет енгізу</li>
+        <li>Қарапайым және күрделі кестелер</li>
+        <li>Жасанды интеллектіні жауапкершілікпен пайдалану</li>
+        <li>Авторлық құқық және плагиат</li>
+      </ul>
+    </button>
+  </div>
+
+  <div class="grid g3" style="margin-top:22px">
+    <div class="card"><h3>🐍 Нақты Python</h3><p>Редакторға жазған кодың шынайы орындалады. Тасбақа қозғалып, сурет салады.</p></div>
+    <div class="card"><h3>📝 100 + 30 сұрақ</h3><p>Әр тақырыпқа 10 сұрақтан тест және курсты қорытындылайтын 30 сұрақтық емтихан.</p></div>
+    <div class="card"><h3>🏆 Прогресс сақталады</h3><p>Аяқталған тақырыптар, тест нәтижелері және жетістіктер браузерде сақталады.</p></div>
+  </div>
+
+  <div class="card" style="margin-top:22px">
+    <h3>Курс барысы</h3>
+    <div class="progress-bar"><div style="width:${progressPct()}%"></div></div>
+    <p>Аяқталған тақырыптар: <b>${d.topics.length}</b> / ${PY_TOPICS.length + DOC_TOPICS.length} · Орындалған тесттер: <b>${Object.keys(d.tests).length}</b> / 10</p>
+  </div>`;
+  $$('.module-card', app).forEach(b => b.addEventListener('click', () => location.hash = b.dataset.go));
+}
+function progressPct(){
+  const d = Store.data;
+  const done = d.topics.length + Object.keys(d.tests).length + d.practice.length + (d.final ? 1 : 0);
+  return Math.min(100, Math.round(done / (PY_TOPICS.length + DOC_TOPICS.length + 10 + 12 + 1) * 100));
+}
+
+/* ---------- Тақырыптар тізімі ---------- */
+function pageTopicList(kind){
+  const list = kind === 'py' ? PY_TOPICS : DOC_TOPICS;
+  const d = Store.data;
+  const head = kind === 'py'
+    ? `<h2>🐍 Python және Turtle</h2><p>6 тақырып: теория, мысалдар, интерактивті тапсырмалар және тесттер.</p>`
+    : `<h2>📄 Мәтіндік құжаттар және цифрлық этика</h2><p>4 тақырып: мәтін, сурет, кесте және ЖИ этикасы.</p>`;
+  app.innerHTML = `
+  <div class="page-head">${head}</div>
+  <div class="grid g3">
+    ${list.map(t => `
+      <a class="card" href="#/topic/${t.id}" style="text-decoration:none;color:inherit;display:block">
+        <span class="badge">${t.num}</span>
+        <h3 style="margin-top:8px">${esc(t.title)}</h3>
+        <p style="font-size:14px;color:var(--muted)">${esc(t.goal)}</p>
+        <div style="margin-top:10px">
+          ${d.topics.includes(t.id)
+            ? '<span class="badge" style="background:var(--emerald);color:#fff">✓ Аяқталды</span>'
+            : '<span class="badge ye">Оқуға дайын</span>'}
+        </div>
+      </a>`).join('')}
+  </div>`;
+}
+
+/* ---------- Тақырып беті ---------- */
+let taskState = {};
+
+function pageTopic(id){
+  const t = PY_TOPICS.concat(DOC_TOPICS).find(x => x.id === id);
+  if(!t){ app.innerHTML = '<div class="card"><p>Тақырып табылмады.</p></div>'; return; }
+  const isPy = t.id.startsWith('py');
+  const done = Store.data.topics.includes(t.id);
+
+  app.innerHTML = `
+  <div class="page-head">
+    <span class="badge">${t.num}</span>
+    <h2>${esc(t.title)}</h2>
+    <p>🎯 <b>Оқу мақсаты:</b> ${esc(t.goal)}</p>
+  </div>
+
+  <div class="card">
+    <h3>📘 Теория</h3>
+    ${t.theory}
+  </div>
+
+  ${t.example ? `
+  <div class="card" style="margin-top:16px">
+    <h3>💡 Мысал код</h3>
+    <pre class="code">${esc(t.example.code)}</pre>
+    <div class="btn-row">
+      <button class="btn cy" id="openInEditor">⌨️ Редакторда ашу және іске қосу</button>
+    </div>
+  </div>` : ''}
+
+  <div class="card" style="margin-top:16px">
+    <h3>🧩 Интерактивті тапсырмалар</h3>
+    <div id="tasks"></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>✅ Тақырыпты аяқтау</h3>
+    <p>Теорияны оқып, тапсырмаларды орындадың ба? Енді біліміңді тест арқылы тексер!</p>
+    <div class="btn-row">
+      <a class="btn" href="#/test/${t.testId}">📝 Тақырыптық тестке өту (10 сұрақ)</a>
+      <button class="btn sec" id="markDone">${done ? '✓ Аяқталды' : 'Тақырыпты аяқтадым деп белгілеу'}</button>
+      <a class="btn sec" href="#/${isPy ? 'python' : 'docs'}">← Тізімге қайту</a>
+    </div>
+  </div>`;
+
+  /* Тапсырмаларды салу */
+  const container = $('#tasks');
+  taskState = {};
+  t.tasks.forEach((task, i) => {
+    const div = document.createElement('div');
+    div.className = 'task-box';
+    container.appendChild(div);
+    renderTask(div, task, t.id + '_' + i);
+  });
+
+  if(t.example){
+    $('#openInEditor').addEventListener('click', () => {
+      localStorage.setItem('dl_code', t.example.code);
+      location.hash = '/editor';
+    });
+  }
+  $('#markDone').addEventListener('click', () => {
+    Store.add('topics', t.id);
+    $('#markDone').textContent = '✓ Аяқталды';
+    checkAchievements();
+    pageTopic(id);
+  });
+}
+
+/* ---------- Интерактивті тапсырмалар ---------- */
+function renderTask(box, task, key){
+  if(task.type === 'category'){
+    box.innerHTML = `
+      <h4>${esc(task.title)}</h4>
+      <p style="font-size:14px;color:var(--muted)">${esc(task.hint)}</p>
+      <div class="pool" id="pool_${key}"></div>
+      <div class="cats" id="cats_${key}"></div>
+      <div class="btn-row">
+        <button class="btn sm" data-check="1">✔️ Тексеру</button>
+        <button class="btn sm sec" data-reset="1">↺ Қайта бастау</button>
+      </div>
+      <div class="msg"></div>`;
+    const pool = $('#pool_' + key, box);
+    const cats = $('#cats_' + key, box);
+    let selected = null;
+
+    const build = () => {
+      pool.innerHTML = '';
+      cats.innerHTML = '';
+      task.items.forEach((it, i) => {
+        const d = document.createElement('div');
+        d.className = 'item';
+        d.dataset.i = i;
+        d.textContent = it.text;
+        d.dataset.place = 'pool';
+        pool.appendChild(d);
+      });
+      task.cats.forEach((c, ci) => {
+        const cd = document.createElement('div');
+        cd.className = 'cat';
+        cd.dataset.cat = ci;
+        cd.innerHTML = `<h5>${esc(c)}</h5><div class="cat-items" style="display:flex;flex-wrap:wrap;gap:6px"></div>`;
+        cats.appendChild(cd);
+      });
+    };
+    const clearSel = () => $$('.item', box).forEach(x => x.classList.remove('sel'));
+    build();
+
+    box.addEventListener('click', e => {
+      const item = e.target.closest('.item');
+      const cat = e.target.closest('.cat');
+      if(item){
+        if(item.classList.contains('sel')){ item.classList.remove('sel'); selected = null; return; }
+        clearSel();
+        item.classList.add('sel');
+        selected = item;
+        return;
+      }
+      if(cat && selected){
+        $('.cat-items', cat).appendChild(selected);
+        selected.classList.remove('sel');
+        selected.dataset.place = cat.dataset.cat;
+        selected = null;
+        return;
+      }
+      if(e.target.closest('[data-check]')){
+        let ok = 0, total = task.items.length, bad = [];
+        $$('.item', box).forEach(it => {
+          if(it.dataset.place === 'pool'){ bad.push(it.textContent); return; }
+          const correct = String(task.items[+it.dataset.i].cat);
+          if(it.dataset.place === correct) ok++;
+          else bad.push(it.textContent);
+        });
+        const msg = $('.msg', box);
+        if(ok === total){
+          msg.className = 'result-msg ok';
+          msg.textContent = `🎉 Тамаша! Барлығы дұрыс: ${ok}/${total}.`;
+        } else {
+          msg.className = 'result-msg no';
+          msg.textContent = `Дұрыс: ${ok}/${total}. Қайта тексеріңіз: ${bad.slice(0,3).join(', ')}${bad.length>3?'...':''}`;
+        }
+      }
+      if(e.target.closest('[data-reset]')){
+        selected = null;
+        $('.msg', box).textContent = '';
+        build();
+      }
+    });
+  }
+
+  else if(task.type === 'order'){
+    box.innerHTML = `
+      <h4>${esc(task.title)}</h4>
+      <p style="font-size:14px;color:var(--muted)">${esc(task.hint)}</p>
+      <ul class="order-list" id="ord_${key}"></ul>
+      <div class="btn-row"><button class="btn sm" data-check="1">✔️ Тексеру</button></div>
+      <div class="msg"></div>`;
+    const ul = $('#ord_' + key, box);
+    let arr = task.steps.slice();
+    // кездейсоқ ретпен (дұрыс болып қалмауы үшін)
+    if(arr.join('|') === task.correct.join('|')) arr = arr.slice().reverse();
+    const draw = () => {
+      ul.innerHTML = arr.map((s, i) => `
+        <li><span class="num">${i+1}</span><span>${esc(s)}</span>
+        <span class="mv">
+          <button data-up="${i}" ${i===0?'disabled':''}>▲</button>
+          <button data-dn="${i}" ${i===arr.length-1?'disabled':''}>▼</button>
+        </span></li>`).join('');
+    };
+    draw();
+    ul.addEventListener('click', e => {
+      const b = e.target.closest('button');
+      if(!b) return;
+      const i = +(b.dataset.up !== undefined ? b.dataset.up : b.dataset.dn);
+      if(b.dataset.up !== undefined && i > 0){ [arr[i-1], arr[i]] = [arr[i], arr[i-1]]; }
+      if(b.dataset.dn !== undefined && i < arr.length-1){ [arr[i+1], arr[i]] = [arr[i], arr[i+1]]; }
+      draw();
+    });
+    $('[data-check]', box).addEventListener('click', () => {
+      const msg = $('.msg', box);
+      const ok = arr.join('|') === task.correct.join('|');
+      msg.className = 'result-msg ' + (ok ? 'ok' : 'no');
+      msg.textContent = ok ? '🎉 Дұрыс! Қадамдар реті дұрыс орналастырылды.' : '🤔 Әлі дұрыс емес. Ойланып, қайта көріңіз.';
+    });
+  }
+
+  else if(task.type === 'choice'){
+    box.innerHTML = `
+      <h4>${esc(task.title)}</h4>
+      <p style="font-size:14px;color:var(--muted)">${esc(task.hint)}</p>
+      <p style="font-weight:600;margin:10px 0">${esc(task.q)}</p>
+      <div class="opts"></div>
+      <div class="msg"></div>`;
+    const opts = $('.opts', box);
+    task.options.forEach(o => {
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.textContent = o.t;
+      b.addEventListener('click', () => {
+        $$('.opt', box).forEach(x => x.disabled = true);
+        b.classList.add(o.ok ? 'correct' : 'wrong');
+        const msg = $('.msg', box);
+        msg.className = 'result-msg ' + (o.ok ? 'ok' : 'no');
+        msg.textContent = (o.ok ? '✅ ' : '❌ ') + o.msg;
+      });
+      opts.appendChild(b);
+    });
+  }
+
+  else if(task.type === 'code'){
+    box.innerHTML = `
+      <h4>${esc(task.title)}</h4>
+      <p style="font-size:14px;color:var(--muted)">${esc(task.hint)}</p>
+      <div class="btn-row">
+        <button class="btn sm cy" data-load="1">⌨️ Редакторға жүктеп, ашу</button>
+      </div>`;
+    $('[data-load]', box).addEventListener('click', () => {
+      localStorage.setItem('dl_code', task.template);
+      localStorage.setItem('dl_pending_check', JSON.stringify(task.rules.map(r => ({src:r.re.source, flags:r.re.flags, msg:r.msg}))));
+      location.hash = '/editor';
+    });
+  }
+}
+
+/* ---------- Python редакторы ---------- */
+const REFERENCE = [
+  ['import turtle', 'Turtle кітапханасын қосу'],
+  ['t = turtle.Turtle()', 'Тасбақа жасау'],
+  ['t.forward(100)', '100 қадам алға'],
+  ['t.backward(50)', '50 қадам артқа'],
+  ['t.right(90)', '90° оңға бұрылу'],
+  ['t.left(90)', '90° солға бұрылу'],
+  ['t.goto(x, y)', 'Координатаға жылжу'],
+  ['t.home()', 'Бастапқы орынға қайту'],
+  ['t.speed(5)', 'Жылдамдық (0–10)'],
+  ['t.penup() / t.pendown()', 'Қаламды көтеру / түсіру'],
+  ['t.color("blue")', 'Сызық түсі'],
+  ['t.pensize(4)', 'Сызық қалыңдығы'],
+  ['t.shape("turtle")', 'Тасбақа пішіні'],
+  ['t.begin_fill() / t.end_fill()', 'Фигураны бояу'],
+  ['t.circle(50)', 'Шеңбер салу'],
+  ['turtle.bgcolor("yellow")', 'Фон түсі'],
+  ['for i in range(4):', '4 рет қайталау'],
+  ['if x > 5: / else:', 'Шартты оператор'],
+  ['print("Сәлем!")', 'Мәтін шығару']
+];
+
+const TEMPLATES = {
+  'Сызық':`import turtle
+
+t = turtle.Turtle()
+t.forward(150)
+
+turtle.done()`,
+  'Шаршы':`import turtle
+
+t = turtle.Turtle()
+t.speed(5)
+
+for i in range(4):
+    t.forward(120)
+    t.right(90)
+
+turtle.done()`,
+  'Үшбұрыш':`import turtle
+
+t = turtle.Turtle()
+
+for i in range(3):
+    t.forward(140)
+    t.right(120)
+
+turtle.done()`,
+  'Үй':`import turtle
+
+t = turtle.Turtle()
+t.speed(5)
+t.pensize(3)
+
+# Қабырға
+t.color("blue")
+for i in range(4):
+    t.forward(120)
+    t.left(90)
+
+# Шатыр
+t.penup()
+t.goto(0, 120)
+t.pendown()
+t.color("red")
+t.goto(60, 180)
+t.goto(120, 120)
+
+turtle.done()`,
+  'Күн':`import turtle
+
+t = turtle.Turtle()
+t.speed(0)
+t.color("orange")
+t.pensize(3)
+
+# Шеңбер
+t.circle(60)
+
+# Сәулелер
+t.penup()
+t.goto(0, 0)
+t.pendown()
+for i in range(12):
+    t.penup()
+    t.goto(0, 0)
+    t.setheading(i * 30)
+    t.forward(80)
+    t.pendown()
+    t.forward(30)
+
+turtle.done()`,
+  'Геометриялық өрнек':`import turtle
+
+t = turtle.Turtle()
+t.speed(0)
+t.color("purple")
+t.pensize(2)
+
+for i in range(12):
+    for j in range(4):
+        t.forward(80)
+        t.right(90)
+    t.right(30)
+
+turtle.done()`
+};
+
+let sim = null, animHandle = null, renderer = null;
+
+function pageEditor(){
+  app.innerHTML = `
+  <div class="page-head">
+    <h2>⌨️ Python Turtle редакторы</h2>
+    <p>Кодты жаз, «Іске қосу» батырмасын бас — тасбақа шынымен қозғалады!</p>
+  </div>
+
+  <div class="editor-layout">
+    <div>
+      <div class="panel">
+        <div class="panel-head">📋 Тапсырма / Анықтама</div>
+        <div class="panel-body" style="max-height:520px;overflow:auto">
+          <div id="taskHint" class="note" style="display:none"></div>
+          <p style="font-size:13.6px;color:var(--muted);margin-bottom:8px">
+            Код үлгісін таңдап, оны өзгертіп көр. Барлық командалар төменде жазылған.
+          </p>
+          ${REFERENCE.map(r => `<div class="ref-item"><code>${esc(r[0])}</code><br><span style="color:var(--muted);font-size:12.6px">${esc(r[1])}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span>🐍 Python коды</span>
+        <span style="display:flex;gap:6px;flex-wrap:wrap">
+          <select id="tplSel" style="border:1px solid var(--border);border-radius:8px;padding:4px 8px;font-size:13px">
+            <option value="">— Үлгі таңдау —</option>
+            ${Object.keys(TEMPLATES).map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('')}
+          </select>
+        </span>
+      </div>
+      <textarea id="pycode" spellcheck="false"></textarea>
+      <div class="console" id="console">// Нәтиже осында шығады</div>
+      <div class="panel-body" style="padding:10px">
+        <div class="btn-row" style="margin-top:0">
+          <button class="btn" id="runBtn">▶️ Іске қосу</button>
+          <button class="btn sec" id="resetBtn">↺ Бастапқы қалыпқа</button>
+          <button class="btn sec" id="clearBtn">🧹 Алаңды тазалау</button>
+          <button class="btn cy" id="pngBtn">💾 PNG сақтау</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><span>🐢 Turtle графикалық алаңы</span></div>
+      <div class="canvas-wrap" id="cwrap">
+        <canvas id="turtleCanvas"></canvas>
+        <canvas id="turtleOverlay"></canvas>
+      </div>
+    </div>
+  </div>`;
+
+  sim = new TurtleSim();
+  const ta = $('#pycode');
+  ta.value = localStorage.getItem('dl_code') || TEMPLATES['Шаршы'];
+  ta.addEventListener('input', () => localStorage.setItem('dl_code', ta.value));
+  ta.addEventListener('keydown', e => {
+    if(e.key === 'Tab'){
+      e.preventDefault();
+      const s = ta.selectionStart, en = ta.selectionEnd;
+      ta.value = ta.value.slice(0,s) + '    ' + ta.value.slice(en);
+      ta.selectionStart = ta.selectionEnd = s + 4;
+    }
+  });
+
+  $('#tplSel').addEventListener('change', e => {
+    const k = e.target.value;
+    if(k && TEMPLATES[k]){
+      ta.value = TEMPLATES[k];
+      localStorage.setItem('dl_code', ta.value);
+      e.target.value = '';
+    }
+  });
+
+  // Тапсырма талаптары
+  const pend = localStorage.getItem('dl_pending_check');
+  if(pend){
+    try{
+      const rules = JSON.parse(pend);
+      const h = $('#taskHint');
+      h.style.display = 'block';
+      h.innerHTML = '<b>📋 Тапсырма талаптары:</b><br>' + rules.map(r => '• ' + esc(r.msg)).join('<br>');
+    }catch(e){}
+  }
+
+  const run = () => {
+    if(animHandle) cancelAnimationFrame(animHandle);
+    sim = new TurtleSim();
+    const outputs = [];
+    const consoleEl = $('#console');
+    consoleEl.innerHTML = '';
+    const t0 = performance.now();
+    let error = null;
+    try{
+      runPython(ta.value, sim, outputs);
+    }catch(err){
+      error = err;
+    }
+    outputs.forEach(o => {
+      const d = document.createElement('div');
+      d.textContent = '> ' + o;
+      consoleEl.appendChild(d);
+    });
+
+    if(error){
+      const d = document.createElement('div');
+      d.className = 'err';
+      d.textContent = '❌ ' + (error.isP ? error.message : ('Орындалу қатесі: ' + error.message));
+      consoleEl.appendChild(d);
+      renderStatic();
+      return;
+    }
+
+    const ms = Math.round(performance.now() - t0);
+    const ok = document.createElement('div');
+    ok.className = 'ok';
+    ok.textContent = `✅ Код сәтті орындалды! (${sim.ops.length} әрекет, ${ms} мс)`;
+    consoleEl.appendChild(ok);
+
+    // Прогресс / жетістіктер
+    const d = Store.data;
+    d.editorRuns = (d.editorRuns || 0) + 1;
+    if(d.editorRuns >= 1) Store.add('ach','a1');
+    if(sim.ops.some(o => o.type === 'line')) Store.add('ach','a2');
+    if(/for\s+\w+\s+in\s+range/.test(ta.value) && sim.ops.length > 8) Store.add('ach','a3');
+    Store.save();
+    checkAchievements();
+
+    // Тапсырма талаптарын тексеру
+    if(pend){
+      try{
+        const rules = JSON.parse(pend);
+        const missing = rules.filter(r => !(new RegExp(r.src, r.flags)).test(ta.value));
+        const d2 = document.createElement('div');
+        if(missing.length === 0){
+          d2.className = 'ok';
+          d2.textContent = '🎉 Тапсырманың барлық талаптары орындалды!';
+          localStorage.removeItem('dl_pending_check');
+          $('#taskHint').style.display = 'none';
+        } else {
+          d2.className = 'err';
+          d2.textContent = '⚠️ Жетіспейді: ' + missing.map(m => m.msg).join('; ');
+        }
+        consoleEl.appendChild(d2);
+      }catch(e){}
+    }
+
+    animate();
+  };
+
+  const renderStatic = () => {
+    const cv = $('#turtleCanvas'), ov = $('#turtleOverlay');
+    const {w,h,ctx} = fitCanvas(cv);
+    const {w:ow,h:oh} = fitCanvas(ov);
+    const octx = ov.getContext('2d');
+    octx.clearRect(0,0,ow,oh);
+    ctx.fillStyle = sim.bgcolor || '#ffffff';
+    ctx.fillRect(0,0,w,h);
+    const view = computeView(sim, w, h);
+    drawGrid(ctx, view);
+    sim.ops.forEach(op => drawOne(ctx, op, view));
+    drawTurtleMarker(octx, sim.x, sim.y, sim.heading, view, sim.shape);
+  };
+
+  function drawGrid(ctx, view){
+    ctx.save();
+    ctx.strokeStyle = 'rgba(16,185,129,.10)';
+    ctx.lineWidth = 1;
+    const step = 50 * view.scale;
+    if(step > 6){
+      let sx = view.cx % step;
+      for(let x = sx; x < view.w; x += step){
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, view.h); ctx.stroke();
+      }
+      let sy = view.cy % step;
+      for(let y = sy; y < view.h; y += step){
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(view.w, y); ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  function animate(){
+    const cv = $('#turtleCanvas'), ov = $('#turtleOverlay');
+    const {w,h,ctx} = fitCanvas(cv);
+    const {w:ow,h:oh} = fitCanvas(ov);
+    const octx = ov.getContext('2d');
+    ctx.fillStyle = sim.bgcolor || '#ffffff';
+    ctx.fillRect(0,0,w,h);
+    const view = computeView(sim, w, h);
+    drawGrid(ctx, view);
+
+    const ops = sim.ops;
+    let i = 0;
+    const total = ops.length;
+    let perFrame = 1;
+    if(total > 4000) perFrame = Math.ceil(total / 60);
+    else if(total > 800) perFrame = Math.ceil(total / 90);
+    else perFrame = 2;
+
+    // соңғы позицияларды алу үшін трек
+    let curX = 0, curY = 0, curH = 0;
+
+    const step = () => {
+      const end = Math.min(i + perFrame, total);
+      for(; i < end; i++){
+        const op = ops[i];
+        drawOne(ctx, op, view);
+        if(op.type === 'line'){ curX = op.x2; curY = op.y2; curH = op.h; }
+        else if(op.type === 'dot' || op.type === 'text'){ curX = op.x; curY = op.y; }
+      }
+      octx.clearRect(0,0,ow,oh);
+      if(i < total) drawTurtleMarker(octx, curX, curY, curH, view, sim.shape);
+      else drawTurtleMarker(octx, sim.x, sim.y, sim.heading, view, sim.shape);
+      if(i < total){
+        animHandle = requestAnimationFrame(step);
+      } else {
+        animHandle = null;
+      }
+    };
+    step();
+  }
+
+  $('#runBtn').addEventListener('click', run);
+  $('#resetBtn').addEventListener('click', () => {
+    ta.value = TEMPLATES['Шаршы'];
+    localStorage.setItem('dl_code', ta.value);
+    sim = new TurtleSim();
+    if(animHandle) cancelAnimationFrame(animHandle);
+    renderStatic();
+    $('#console').innerHTML = '// Бастапқы код қалпына келтірілді';
+  });
+  $('#clearBtn').addEventListener('click', () => {
+    sim.ops = []; sim.x = 0; sim.y = 0; sim.heading = 0;
+    if(animHandle) cancelAnimationFrame(animHandle);
+    renderStatic();
+    $('#console').innerHTML = '// Алаң тазаланды';
+  });
+  $('#pngBtn').addEventListener('click', () => {
+    const cv = $('#turtleCanvas');
+    const tmp = document.createElement('canvas');
+    tmp.width = cv.width; tmp.height = cv.height;
+    const tc = tmp.getContext('2d');
+    tc.drawImage(cv, 0, 0);
+    const ov = $('#turtleOverlay');
+    tc.drawImage(ov, 0, 0);
+    const a = document.createElement('a');
+    a.download = 'turtle-suret.png';
+    a.href = tmp.toDataURL('image/png');
+    a.click();
+    const c = $('#console');
+    const d = document.createElement('div');
+    d.className = 'ok';
+    d.textContent = '💾 Сурет PNG ретінде сақталды!';
+    c.appendChild(d);
+  });
+
+  // Алғашқы салу
+  requestAnimationFrame(() => {
+    sim = new TurtleSim();
+    renderStatic();
+    try{ run(); }catch(e){}
+  });
+
+  window.addEventListener('resize', () => { if(sim) renderStatic(); });
+}
+
+/* ---------- Практикалық жұмыстар ---------- */
+function pagePractice(){
+  const d = Store.data;
+  app.innerHTML = `
+  <div class="page-head">
+    <h2>🛠️ Практикалық жұмыстар</h2>
+    <p>Әр жұмысты орындап, «Тексеру» батырмасын басыңыз.</p>
+  </div>
+  <div class="grid g2" id="pracList">
+    ${PRACTICE.map(p => `
+      <div class="card" id="prac_${p.id}">
+        <span class="badge ${p.mod === 'py' ? '' : 'cy'}">${p.mod === 'py' ? '🐍 Python' : '📄 Құжат'}</span>
+        <h3 style="margin-top:8px">${esc(p.title)}</h3>
+        <p style="font-size:14.5px"><b>Мақсат:</b> ${esc(p.goal)}</p>
+        <p style="font-size:14px"><b>Құралдар:</b> ${p.tools.map(esc).join(', ')}</p>
+        <p style="font-size:14px;margin-top:8px"><b>Қадамдар:</b></p>
+        <ol style="font-size:14px">${p.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
+        <div class="btn-row">
+          ${p.mod === 'py'
+            ? `<button class="btn sm" data-tpl="${p.id}">⌨️ Редакторда ашу</button>`
+            : (p.title.includes('кесте')
+                ? `<a class="btn sm cy" href="#/tables">📊 Кесте редакторын ашу</a>`
+                : `<a class="btn sm cy" href="#/doceditor">✍️ Құжат редакторын ашу</a>`)}
+          <button class="btn sm sec" data-done="${p.id}">${d.practice.includes(p.id) ? '✓ Орындалды' : 'Орындадым деп белгілеу'}</button>
+        </div>
+        <div class="msg"></div>
+      </div>`).join('')}
+  </div>`;
+
+  app.addEventListener('click', e => {
+    const tpl = e.target.closest('[data-tpl]');
+    if(tpl){
+      const p = PRACTICE.find(x => x.id === tpl.dataset.tpl);
+      localStorage.setItem('dl_code', p.template);
+      location.hash = '/editor';
+      return;
+    }
+    const dn = e.target.closest('[data-done]');
+    if(dn){
+      Store.add('practice', dn.dataset.done);
+      dn.textContent = '✓ Орындалды';
+      checkAchievements();
+    }
+  });
+}
+
+/* ---------- Құжат редакторы ---------- */
+function pageDocEditor(){
+  app.innerHTML = `
+  <div class="page-head">
+    <h2>✍️ Құжат редакторы</h2>
+    <p>Мәтінді жазып, форматтаңыз. Нәтижені сақтап, жүктей аласыз.</p>
+  </div>
+  <div class="toolbar">
+    <select id="fontSel">
+      <option>Arial</option><option>Times New Roman</option><option>Georgia</option>
+      <option>Courier New</option><option>Verdana</option>
+    </select>
+    <select id="sizeSel">
+      <option>12</option><option>14</option><option>16</option><option>18</option>
+      <option>24</option><option>32</option><option>40</option>
+    </select>
+    <button data-cmd="bold"><b>B</b> Қалың</button>
+    <button data-cmd="italic"><i>I</i> Көлбеу</button>
+    <button data-cmd="underline"><u>U</u> Асты сызылған</button>
+    <input type="color" id="colorSel" value="#0f2b23" title="Мәтін түсі">
+    <button data-cmd="justifyLeft">⬅️ Солға</button>
+    <button data-cmd="justifyCenter">↔️ Ортаға</button>
+    <button data-cmd="justifyRight">➡️ Оңға</button>
+    <button data-cmd="insertUnorderedList">• Тізім</button>
+    <button data-cmd="insertOrderedList">1. Тізім</button>
+    <button data-cmd="formatBlock" data-val="h1">Тақырып 1</button>
+    <button data-cmd="formatBlock" data-val="h2">Тақырып 2</button>
+    <button data-cmd="formatBlock" data-val="p">Қарапайым</button>
+    <button id="imgBtn">🖼️ Сурет қосу</button>
+    <button id="saveBtn">💾 Сақтау</button>
+    <button id="loadBtn">📂 Жүктеу</button>
+    <button id="dlBtn">⬇️ Жүктеп алу</button>
+  </div>
+  <div id="docArea" contenteditable="true">
+    <h1>Менің мектебім</h1>
+    <p>Мен <b>5-сыныпта</b> оқимын. Мектебім үлкен әрі жарық.</p>
+    <p><b>Мектептегі сүйікті пәндерім:</b></p>
+    <ul><li>Информатика</li><li>Математика</li><li>Қазақ тілі</li></ul>
+    <p style="text-align:center"><i>Мәтінді белгілеп, жоғарыдағы батырмаларды қолданып көріңіз!</i></p>
+  </div>
+  <div class="msg" id="docMsg" style="margin-top:12px"></div>
+  <input type="file" id="imgInput" accept="image/*" class="hidden">`;
+
+  const area = $('#docArea');
+  const saved = localStorage.getItem('dl_doc');
+  if(saved) area.innerHTML = saved;
+
+  $('.toolbar').addEventListener('click', e => {
+    const b = e.target.closest('button[data-cmd]');
+    if(!b) return;
+    const cmd = b.dataset.cmd;
+    if(cmd === 'formatBlock'){
+      document.execCommand('formatBlock', false, '<' + b.dataset.val + '>');
+    } else {
+      document.execCommand(cmd, false, null);
+    }
+    area.focus();
+    saveDoc();
+  });
+  $('#fontSel').addEventListener('change', e => {
+    document.execCommand('fontName', false, e.target.value);
+    area.focus(); saveDoc();
+  });
+  $('#sizeSel').addEventListener('change', e => {
+    document.execCommand('fontSize', false, '7');
+    // өлшемді түзету
+    $$('font[size="7"]', area).forEach(f => {
+      f.removeAttribute('size');
+      f.style.fontSize = e.target.value + 'px';
+    });
+    area.focus(); saveDoc();
+  });
+  $('#colorSel').addEventListener('input', e => {
+    document.execCommand('foreColor', false, e.target.value);
+    area.focus(); saveDoc();
+  });
+  $('#imgBtn').addEventListener('click', () => $('#imgInput').click());
+  $('#imgInput').addEventListener('change', e => {
+    const f = e.target.files[0];
+    if(!f) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      document.execCommand('insertHTML', false,
+        `<img src="${ev.target.result}" style="max-width:70%;display:block;margin:12px auto;border-radius:10px">`);
+      saveDoc();
+      Store.add('ach','a4');
+      checkAchievements();
+    };
+    r.readAsDataURL(f);
+    e.target.value = '';
+  });
+  area.addEventListener('input', saveDoc);
+
+  function saveDoc(){
+    localStorage.setItem('dl_doc', area.innerHTML);
+    const d = Store.data;
+    d.docSaved = (d.docSaved || 0) + 1;
+    Store.save();
+  }
+  $('#saveBtn').addEventListener('click', () => {
+    saveDoc();
+    showMsg('💾 Құжат сақталды!', true);
+    Store.add('ach','a4');
+    checkAchievements();
+  });
+  $('#loadBtn').addEventListener('click', () => {
+    const s = localStorage.getItem('dl_doc');
+    if(s){ area.innerHTML = s; showMsg('📂 Соңғы сақталған құжат жүктелді.', true); }
+    else showMsg('Сақталған құжат табылмады.', false);
+  });
+  $('#dlBtn').addEventListener('click', () => {
+    const html = `<!DOCTYPE html><html lang="kk"><head><meta charset="utf-8"><title>Менің құжатым</title></head><body>${area.innerHTML}</body></html>`;
+    const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'qujat.html';
+    a.click();
+    showMsg('⬇️ Құжат жүктелді!', true);
+  });
+  function showMsg(t, ok){
+    const m = $('#docMsg');
+    m.className = 'result-msg ' + (ok ? 'ok' : 'no');
+    m.textContent = t;
+    setTimeout(() => { m.textContent = ''; m.className = 'msg'; }, 3000);
+  }
+}
+
+/* ---------- Кесте редакторы ---------- */
+class TableModel{
+  constructor(rows, cols){
+    this.rows = rows; this.cols = cols;
+    this.cells = [];
+    this.reset(rows, cols);
+  }
+  reset(rows, cols){
+    this.rows = rows; this.cols = cols; this.cells = [];
+    for(let r=0;r<rows;r++) for(let c=0;c<cols;c++)
+      this.cells.push({id:'c'+r+'_'+c, r, c, rs:1, cs:1, text:'', bg:'', align:'left'});
+  }
+  grid(){
+    const g = Array.from({length:this.rows}, () => Array(this.cols).fill(null));
+    for(const cell of this.cells){
+      for(let r=cell.r; r<cell.r+cell.rs; r++)
+        for(let c=cell.c; c<cell.c+cell.cs; c++)
+          if(r < this.rows && c < this.cols) g[r][c] = cell;
+    }
+    return g;
+  }
+  find(r,c){
+    const g = this.grid();
+    return (g[r] && g[r][c]) || null;
+  }
+  merge(ids){
+    if(ids.length < 2) return;
+    const sel = this.cells.filter(c => ids.includes(c.id));
+    if(!sel.length) return;
+    let minR = Infinity, minC = Infinity, maxR = -Infinity, maxC = -Infinity;
+    sel.forEach(c => {
+      minR = Math.min(minR, c.r); minC = Math.min(minC, c.c);
+      maxR = Math.max(maxR, c.r + c.rs - 1); maxC = Math.max(maxC, c.c + c.cs - 1);
+    });
+    const keep = this.find(minR, minC);
+    if(!keep) return;
+    const rs = maxR - minR + 1, cs = maxC - minC + 1;
+    this.cells = this.cells.filter(c => {
+      if(c === keep) return true;
+      const overlap = !(c.r + c.rs - 1 < minR || c.r > maxR || c.c + c.cs - 1 < minC || c.c > maxC);
+      return !overlap;
+    });
+    keep.r = minR; keep.c = minC; keep.rs = rs; keep.cs = cs;
+    this.cells.push({id:'c'+minR+'_'+minC+'_x', r:minR, c:minC, rs:1, cs:1, text:'', bg:'', align:'left'});
+    this.cells = this.cells.filter(c => c !== this.cells[this.cells.length-1]);
+  }
+  split(cellId){
+    const cell = this.cells.find(c => c.id === cellId);
+    if(!cell || (cell.rs === 1 && cell.cs === 1)) return;
+    const {r, c, rs, cs} = cell;
+    cell.rs = 1; cell.cs = 1;
+    for(let i=r;i<r+rs;i++) for(let j=c;j<c+cs;j++){
+      if(i === r && j === c) continue;
+      this.cells.push({id:'c'+i+'_'+j+'_'+Math.random().toString(36).slice(2,7),
+                       r:i, c:j, rs:1, cs:1, text:'', bg:'', align:'left'});
+    }
+  }
+  addRow(){
+    const r = this.rows;
+    for(let c=0;c<this.cols;c++)
+      this.cells.push({id:'c'+r+'_'+c+'_'+Math.random().toString(36).slice(2,7), r, c, rs:1, cs:1, text:'', bg:'', align:'left'});
+    this.rows++;
+  }
+  addCol(){
+    const c = this.cols;
+    for(let r=0;r<this.rows;r++)
+      this.cells.push({id:'c'+r+'_'+c+'_'+Math.random().toString(36).slice(2,7), r, c, rs:1, cs:1, text:'', bg:'', align:'left'});
+    this.cols++;
+  }
+  delRow(){
+    if(this.rows <= 1) return;
+    this.rows--;
+    this.cells = this.cells.filter(c => c.r < this.rows);
+    this.cells.forEach(c => { if(c.r + c.rs > this.rows) c.rs = Math.max(1, this.rows - c.r); });
+  }
+  delCol(){
+    if(this.cols <= 1) return;
+    this.cols--;
+    this.cells = this.cells.filter(c => c.c < this.cols);
+    this.cells.forEach(c => { if(c.c + c.cs > this.cols) c.cs = Math.max(1, this.cols - c.c); });
+  }
+}
+
+let tbl = null, tblSel = new Set();
+
+function pageTables(){
+  tbl = new TableModel(4, 4);
+  // демо мазмұн
+  const demo = [['Күні','1-сабақ','2-сабақ','3-сабақ'],
+                ['Дүйсенбі','Математика','Қазақ тілі','Информатика'],
+                ['Сейсенбі','Физика','Тарих','Ағылшын тілі'],
+                ['Сәрсенбі','Информатика','Математика','Дене шынықтыру']];
+  const g = tbl.grid();
+  demo.forEach((row, r) => row.forEach((v, c) => { if(g[r] && g[r][c]) g[r][c].text = v; }));
+  if(g[0]) g[0].forEach(cell => { if(cell) cell.bg = '#d1fae5'; });
+
+  app.innerHTML = `
+  <div class="page-head">
+    <h2>📊 Кесте редакторы</h2>
+    <p>Ұяшықты басып таңдаңыз, Shift пернесімен бірнеше ұяшық таңдауға болады.</p>
+  </div>
+  <div class="toolbar">
+    <button id="tAddRow">➕ Жол қосу</button>
+    <button id="tAddCol">➕ Баған қосу</button>
+    <button id="tDelRow">➖ Жол өшіру</button>
+    <button id="tDelCol">➖ Баған өшіру</button>
+    <button id="tMerge">🔗 Біріктіру</button>
+    <button id="tSplit">✂️ Бөлу</button>
+    <input type="color" id="tBg" value="#d1fae5" title="Ұяшық фоны">
+    <button id="tBgApply">🎨 Фонды бояу</button>
+    <button id="tBgClear">🧽 Фонды тазалау</button>
+    <button id="tAlignL">⬅️ Солға</button>
+    <button id="tAlignC">↔️ Ортаға</button>
+    <button id="tReset">↺ Қайта бастау</button>
+  </div>
+  <div style="overflow:auto;background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px">
+    <table class="editor" id="tblEl"></table>
+  </div>
+  <div class="msg" id="tblMsg" style="margin-top:12px"></div>`;
+
+  drawTable();
+
+  function drawTable(){
+    const g = tbl.grid();
+    const tblEl = $('#tblEl');
+    let html = '<tbody>';
+    for(let r=0;r<tbl.rows;r++){
+      html += '<tr>';
+      for(let c=0;c<tbl.cols;c++){
+        const cell = g[r][c];
+        if(!cell) continue;
+        if(cell.r !== r || cell.c !== c) continue;
+        const sel = tblSel.has(cell.id) ? ' sel' : '';
+        html += `<td data-id="${cell.id}" rowspan="${cell.rs}" colspan="${cell.cs}"
+          contenteditable="true" class="${sel}"
+          style="background:${cell.bg||'#fff'};text-align:${cell.align}">${esc(cell.text)}</td>`;
+      }
+      html += '</tr>';
+    }
+    html += '</tbody>';
+    tblEl.innerHTML = html;
+  }
+
+  let lastCell = null;
+  $('#tblEl').addEventListener('click', e => {
+    const td = e.target.closest('td');
+    if(!td) return;
+    const id = td.dataset.id;
+    if(e.shiftKey && lastCell){
+      // тіктөртбұрыш диапазон таңдау
+      const g = tbl.grid();
+      const a = tbl.cells.find(c => c.id === lastCell);
+      const b = tbl.cells.find(c => c.id === id);
+      if(a && b){
+        tblSel.clear();
+        const r1 = Math.min(a.r,b.r), r2 = Math.max(a.r+a.rs-1, b.r+b.rs-1);
+        const c1 = Math.min(a.c,b.c), c2 = Math.max(a.c+a.cs-1, b.c+b.cs-1);
+        for(let r=r1;r<=r2;r++) for(let c=c1;c<=c2;c++){
+          const cc = g[r] && g[r][c];
+          if(cc) tblSel.add(cc.id);
+        }
+      }
+    } else {
+      tblSel.clear();
+      tblSel.add(id);
+      lastCell = id;
+    }
+    drawTable();
+  });
+  $('#tblEl').addEventListener('input', e => {
+    const td = e.target.closest('td');
+    if(!td) return;
+    const cell = tbl.cells.find(c => c.id === td.dataset.id);
+    if(cell) cell.text = td.innerHTML;
+  });
+  $('#tblEl').addEventListener('blur', e => {
+    const td = e.target.closest('td');
+    if(td) drawTable();
+  }, true);
+
+  const msg = (t, ok) => {
+    const m = $('#tblMsg');
+    m.className = 'result-msg ' + (ok ? 'ok' : 'no');
+    m.textContent = t;
+    setTimeout(() => { m.className = 'msg'; m.textContent = ''; }, 3200);
+  };
+
+  $('#tAddRow').addEventListener('click', () => { tbl.addRow(); drawTable(); });
+  $('#tAddCol').addEventListener('click', () => { tbl.addCol(); drawTable(); });
+  $('#tDelRow').addEventListener('click', () => { tbl.delRow(); drawTable(); });
+  $('#tDelCol').addEventListener('click', () => { tbl.delCol(); drawTable(); });
+
+  $('#tMerge').addEventListener('click', () => {
+    if(tblSel.size < 2){ msg('Кемінде 2 ұяшық таңдаңыз (Shift арқылы).', false); return; }
+    // біріктіру: барлығын бір ұяшыққа
+    const g = tbl.grid();
+    const sel = tbl.cells.filter(c => tblSel.has(c.id));
+    let minR = Infinity, minC = Infinity, maxR = -Infinity, maxC = -Infinity;
+    sel.forEach(c => {
+      minR = Math.min(minR, c.r); minC = Math.min(minC, c.c);
+      maxR = Math.max(maxR, c.r + c.rs - 1); maxC = Math.max(maxC, c.c + c.cs - 1);
+    });
+    const keep = g[minR] && g[minR][minC];
+    if(!keep){ msg('Біріктіру мүмкін болмады.', false); return; }
+    const rs = maxR - minR + 1, cs = maxC - minC + 1;
+    tbl.cells = tbl.cells.filter(c => {
+      if(c === keep) return true;
+      const ov = !(c.r + c.rs - 1 < minR || c.r > maxR || c.c + c.cs - 1 < minC || c.c > maxC);
+      return !ov;
+    });
+    keep.r = minR; keep.c = minC; keep.rs = rs; keep.cs = cs;
+    tblSel.clear(); tblSel.add(keep.id);
+    drawTable();
+    Store.add('ach','a5');
+    checkAchievements();
+    msg('🔗 Ұяшықтар біріктірілді!', true);
+  });
+
+  $('#tSplit').addEventListener('click', () => {
+    if(tblSel.size !== 1){ msg('Бір ұяшық таңдаңыз.', false); return; }
+    const id = [...tblSel][0];
+    tbl.split(id);
+    tblSel.clear();
+    drawTable();
+    msg('✂️ Ұяшық бөлінді!', true);
+  });
+
+  $('#tBgApply').addEventListener('click', () => {
+    const col = $('#tBg').value;
+    tbl.cells.forEach(c => { if(tblSel.has(c.id)) c.bg = col; });
+    drawTable();
+    Store.add('ach','a5'); checkAchievements();
+    msg('🎨 Фон түсі өзгертілді!', true);
+  });
+  $('#tBgClear').addEventListener('click', () => {
+    tbl.cells.forEach(c => { if(tblSel.has(c.id)) c.bg = ''; });
+    drawTable();
+  });
+  $('#tAlignL').addEventListener('click', () => {
+    tbl.cells.forEach(c => { if(tblSel.has(c.id)) c.align = 'left'; }); drawTable();
+  });
+  $('#tAlignC').addEventListener('click', () => {
+    tbl.cells.forEach(c => { if(tblSel.has(c.id)) c.align = 'center'; }); drawTable();
+  });
+  $('#tReset').addEventListener('click', () => { pageTables(); });
+}
+
+/* ---------- Тест беті ---------- */
+function pageTests(){
+  const d = Store.data;
+  app.innerHTML = `
+  <div class="page-head">
+    <h2>📝 Тақырыптық тесттер</h2>
+    <p>Әр тестте 10 сұрақ. Дұрыс жауапқа түсіндірме беріледі.</p>
+  </div>
+  <div class="grid g3">
+    ${Object.keys(TESTS).map((k, i) => {
+      const t = TESTS[k];
+      const r = d.tests[k];
+      return `<div class="card">
+        <span class="badge">Тест ${i+1}</span>
+        <h3 style="margin-top:8px">${esc(t.title)}</h3>
+        <p style="font-size:14px;color:var(--muted)">10 сұрақ · 4 нұсқа</p>
+        ${r ? `<p><b>Нәтиже:</b> ${r.score}/${r.total} (${Math.round(r.score/r.total*100)}%)</p>` : '<p style="font-size:14px;color:var(--muted)">Әлі орындалмаған</p>'}
+        <div class="btn-row"><a class="btn sm" href="#/test/${k}">${r ? 'Қайта тапсыру' : 'Тестті бастау'}</a></div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function pageTest(id){
+  const test = TESTS[id];
+  if(!test){ app.innerHTML = '<div class="card"><p>Тест табылмады.</p></div>'; return; }
+  let idx = 0, score = 0, answered = false;
+  const total = test.qs.length;
+
+  const render = () => {
+    if(idx >= total){ finish(); return; }
+    const q = test.qs[idx];
+    app.innerHTML = `
+      <div class="page-head">
+        <h2>📝 ${esc(test.title)}</h2>
+        <p>Сұрақ ${idx+1} / ${total} · Дұрыс жауап: ${score}</p>
+      </div>
+      <div class="progress-bar"><div style="width:${idx/total*100}%"></div></div>
+      <div class="card">
+        <h3 style="font-size:17px;color:var(--text)">${esc(q[0])}</h3>
+        <div id="opts" style="margin-top:14px"></div>
+        <div id="fb"></div>
+        <div class="btn-row" id="nav" style="display:none">
+          <button class="btn" id="nextBtn">${idx+1 === total ? 'Аяқтау' : 'Келесі сұрақ →'}</button>
+        </div>
+      </div>`;
+    const opts = $('#opts');
+    q[1].forEach((o, i) => {
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.textContent = String.fromCharCode(65 + i) + ') ' + o;
+      b.addEventListener('click', () => {
+        if(answered) return;
+        answered = true;
+        $$('.opt', opts).forEach((x, j) => {
+          x.disabled = true;
+          if(j === q[2]) x.classList.add('correct');
+        });
+        if(i === q[2]) score++;
+        else b.classList.add('wrong');
+        const fb = $('#fb');
+        fb.className = 'result-msg ' + (i === q[2] ? 'ok' : 'no');
+        fb.textContent = (i === q[2] ? '✅ Дұрыс! ' : '❌ Қате. ') + q[3];
+        $('#nav').style.display = 'flex';
+      });
+      opts.appendChild(b);
+    });
+  };
+
+  const finish = () => {
+    const pct = Math.round(score/total*100);
+    const d = Store.data;
+    d.tests[id] = {score, total, pct, date: new Date().toLocaleDateString('kk-KZ')};
+    Store.save();
+    if(id === 't10' && pct >= 70) Store.add('ach','a6');
+    checkAchievements();
+    app.innerHTML = `
+      <div class="card" style="text-align:center;padding:36px">
+        <h2 style="color:var(--emerald-dark)">Тест аяқталды!</h2>
+        <p style="font-size:44px;font-weight:800;color:var(--emerald);margin:14px 0">${score} / ${total}</p>
+        <p style="font-size:19px">${pct}%</p>
+        <p style="margin-top:10px">${pct >= 90 ? '🌟 Керемет нәтиже!' : pct >= 70 ? '👍 Жақсы!' : pct >= 50 ? '🙂 Жақсы, тағы жаттығып көр!' : '📚 Тақырыпты қайталап, қайта тапсырып көр.'}</p>
+        <div class="btn-row" style="justify-content:center">
+          <a class="btn" href="#/test/${id}">🔄 Қайта тапсыру</a>
+          <a class="btn sec" href="#/tests">← Тесттер тізімі</a>
+          <a class="btn cy" href="#/results">📈 Нәтижелерім</a>
+        </div>
+      </div>`;
+  };
+
+  render();
+  // «Келесі» батырмасын делегат арқылы өңдеу
+  app.addEventListener('click', e => {
+    if(e.target.closest('#nextBtn')){
+      idx++; answered = false;
+      render();
+    }
+  });
+}
+
+/* ---------- Қорытынды тест ---------- */
+function pageFinal(){
+  const d = Store.data;
+  if(d.final){
+    app.innerHTML = `
+      <div class="page-head"><h2>🏁 Қорытынды тест</h2></div>
+      <div class="card" style="text-align:center;padding:32px">
+        <p style="font-size:15px">Соңғы нәтижең:</p>
+        <p style="font-size:48px;font-weight:800;color:var(--emerald)">${d.final.score} / ${d.final.total}</p>
+        <p style="font-size:20px">${d.final.pct}%</p>
+        <p style="margin:12px 0;font-size:17px">${finalGrade(d.final.pct)}</p>
+        <div class="btn-row" style="justify-content:center">
+          <button class="btn" id="retakeFinal">🔄 Қайта тапсыру</button>
+          <a class="btn sec" href="#/results">📈 Нәтижелерім</a>
+        </div>
+      </div>`;
+    $('#retakeFinal').addEventListener('click', () => {
+      Store.data.final = null; Store.save(); pageFinal();
+    });
+    return;
+  }
+
+  const qs = FINAL_QS.slice().sort(() => Math.random() - 0.5);
+  let idx = 0, score = 0, answered = false;
+  const wrongs = [];
+
+  const render = () => {
+    if(idx >= qs.length){
+      const pct = Math.round(score / qs.length * 100);
+      Store.data.final = {score, total:qs.length, pct, date:new Date().toLocaleDateString('kk-KZ')};
+      Store.save();
+      checkAchievements();
+      app.innerHTML = `
+        <div class="card" style="text-align:center;padding:36px">
+          <h2 style="color:var(--emerald-dark)">🏁 Қорытынды тест аяқталды!</h2>
+          <p style="font-size:48px;font-weight:800;color:var(--emerald);margin:12px 0">${score} / ${qs.length}</p>
+          <p style="font-size:20px">${pct}%</p>
+          <p style="margin:12px 0;font-size:18px;font-weight:700">${finalGrade(pct)}</p>
+          ${wrongs.length ? `<div style="text-align:left;margin-top:20px;background:var(--warn);border:1.5px solid var(--warnb);border-radius:14px;padding:16px">
+            <b>Қате жауаптарды қайта қарау:</b>
+            ${wrongs.map(w => `<p style="margin-top:10px;font-size:14.5px">❌ ${esc(w.q)}<br><span style="color:var(--emerald-dark)">Дұрыс жауап: ${esc(w.ans)}</span><br><span style="color:var(--muted);font-size:13.5px">${esc(w.exp)}</span></p>`).join('')}
+          </div>` : '<p style="margin-top:16px">🎉 Барлық сұраққа дұрыс жауап бердің!</p>'}
+          <div class="btn-row" style="justify-content:center;margin-top:22px">
+            <a class="btn" href="#/results">📈 Нәтижелерім</a>
+            <a class="btn sec" href="#/home">🏠 Басты бет</a>
+          </div>
+        </div>`;
+      return;
+    }
+    const q = qs[idx];
+    app.innerHTML = `
+      <div class="page-head">
+        <h2>🏁 Қорытынды тест</h2>
+        <p>Сұрақ ${idx+1} / ${qs.length} · Дұрыс: ${score}</p>
+      </div>
+      <div class="progress-bar"><div style="width:${idx/qs.length*100}%"></div></div>
+      <div class="card">
+        <h3 style="font-size:17px;color:var(--text)">${esc(q[0])}</h3>
+        <div id="opts" style="margin-top:14px"></div>
+        <div id="fb"></div>
+        <div class="btn-row" id="nav" style="display:none">
+          <button class="btn" id="nextBtn">${idx+1 === qs.length ? 'Аяқтау' : 'Келесі →'}</button>
+        </div>
+      </div>`;
+    const opts = $('#opts');
+    q[1].forEach((o, i) => {
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.textContent = String.fromCharCode(65 + i) + ') ' + o;
+      b.addEventListener('click', () => {
+        if(answered) return;
+        answered = true;
+        $$('.opt', opts).forEach((x, j) => {
+          x.disabled = true;
+          if(j === q[2]) x.classList.add('correct');
+        });
+        if(i === q[2]) score++;
+        else {
+          b.classList.add('wrong');
+          wrongs.push({q:q[0], ans:q[1][q[2]], exp:q[3]});
+        }
+        const fb = $('#fb');
+        fb.className = 'result-msg ' + (i === q[2] ? 'ok' : 'no');
+        fb.textContent = (i === q[2] ? '✅ Дұрыс! ' : '❌ Қате. ') + q[3];
+        $('#nav').style.display = 'flex';
+      });
+      opts.appendChild(b);
+    });
+  };
+  render();
+  app.addEventListener('click', e => {
+    if(e.target.closest('#nextBtn')){ idx++; answered = false; render(); }
+  });
+}
+function finalGrade(pct){
+  if(pct >= 90) return '🥇 «Digital Lab шебері!»';
+  if(pct >= 75) return '🌟 «Өте жақсы!»';
+  if(pct >= 50) return '👍 «Жақсы, тағы жаттығып көр!»';
+  return '📚 «Тақырыптарды қайтала!»';
+}
+
+/* ---------- Нәтижелер ---------- */
+function checkAchievements(){
+  const d = Store.data;
+  // a1 — код іске қосу
+  if((d.editorRuns||0) > 0) Store.add('ach','a1');
+  // a6 — этика тесті
+  if(d.tests.t10 && d.tests.t10.pct >= 70) Store.add('ach','a6');
+  Store.save();
+}
+
+function pageResults(){
+  const d = Store.data;
+  const allTopics = PY_TOPICS.concat(DOC_TOPICS);
+  const testsDone = Object.keys(d.tests).length;
+  const pct = progressPct();
+
+  app.innerHTML = `
+  <div class="page-head">
+    <h2>📈 Менің нәтижелерім</h2>
+    <p>Барлық жетістігің осында сақталады.</p>
+  </div>
+
+  <div class="grid g3">
+    <div class="stat"><b>${d.topics.length}</b><span>Аяқталған тақырып</span></div>
+    <div class="stat"><b>${testsDone}</b><span>Орындалған тест</span></div>
+    <div class="stat"><b>${d.practice.length}</b><span>Практикалық жұмыс</span></div>
+    <div class="stat"><b>${d.editorRuns||0}</b><span>Код іске қосу</span></div>
+    <div class="stat"><b>${d.ach.length}/6</b><span>Жетістік</span></div>
+    <div class="stat"><b>${pct}%</b><span>Жалпы прогресс</span></div>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <h3>Жалпы прогресс</h3>
+    <div class="progress-bar"><div style="width:${pct}%"></div></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>🏆 Жетістіктер</h3>
+    <div class="grid g3" style="margin-top:12px">
+      ${ACHIEVEMENTS.map(a => `
+        <div class="ach ${d.ach.includes(a.id) ? 'got' : ''}">
+          <div class="ico">${a.ico}</div>
+          <div><b>${esc(a.name)}</b><span>${esc(a.desc)}</span></div>
+        </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>📚 Тақырыптар</h3>
+    <div style="margin-top:10px">
+      ${allTopics.map(t => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px dashed var(--border)">
+          <span>${esc(t.num)} · ${esc(t.title)}</span>
+          <span>${d.topics.includes(t.id) ? '<span class="badge" style="background:var(--emerald);color:#fff">✓ Аяқталды</span>' : '<span class="badge ye">Басталмаған</span>'}</span>
+        </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>📝 Тест нәтижелері</h3>
+    ${testsDone === 0 ? '<p style="color:var(--muted)">Әлі тест тапсырылмаған.</p>' :
+      Object.keys(TESTS).map(k => {
+        const r = d.tests[k];
+        if(!r) return `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--border);color:var(--muted)">
+          <span>${esc(TESTS[k].title)}</span><span>—</span></div>`;
+        return `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--border)">
+          <span>${esc(TESTS[k].title)}</span>
+          <span><b style="color:${r.pct>=70?'var(--emerald)':'#ea580c'}">${r.score}/${r.total} (${r.pct}%)</b></span></div>`;
+      }).join('')}
+    ${d.final ? `<p style="margin-top:12px"><b>🏁 Қорытынды тест:</b> ${d.final.score}/${d.final.total} (${d.final.pct}%) — ${finalGrade(d.final.pct)}</p>` : ''}
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>🛠️ Практикалық жұмыстар</h3>
+    ${d.practice.length === 0 ? '<p style="color:var(--muted)">Әлі орындалмаған.</p>' :
+      PRACTICE.filter(p => d.practice.includes(p.id)).map(p => `<p>✓ ${esc(p.title)}</p>`).join('')}
+  </div>
+
+  <div class="btn-row" style="margin-top:18px">
+    <a class="btn" href="#/home">🏠 Басты бетке</a>
+    <button class="btn sec" id="resetAll">🗑️ Прогресті тазалау</button>
+  </div>`;
+
+  $('#resetAll').addEventListener('click', () => {
+    if(confirm('Барлық прогресті тазалауға сенімдісің бе?')){
+      localStorage.removeItem(Store.key);
+      localStorage.removeItem('dl_code');
+      localStorage.removeItem('dl_doc');
+      Store.load(); Store.updateChips();
+      location.hash = '/home';
+      render();
+    }
+  });
+}
+
+/* =========================================================================
+   10. РОУТЕР
+   ========================================================================= */
+function render(){
+  const hash = location.hash.slice(1) || '/home';
+  const parts = hash.split('/').filter(Boolean);
+  const base = '/' + (parts[0] || 'home');
+  markNav();
+  window.scrollTo(0, 0);
+
+  try{
+    switch(base){
+      case '/home': pageHome(); break;
+      case '/python': pageTopicList('py'); break;
+      case '/docs': pageTopicList('doc'); break;
+      case '/topic': pageTopic(parts[1]); break;
+      case '/editor': pageEditor(); break;
+      case '/practice': pagePractice(); break;
+      case '/doceditor': pageDocEditor(); break;
+      case '/tables': pageTables(); break;
+      case '/tests': pageTests(); break;
+      case '/test': pageTest(parts[1]); break;
+      case '/final': pageFinal(); break;
+      case '/results': pageResults(); break;
+      default: pageHome();
+    }
+  }catch(err){
+    console.error(err);
+    app.innerHTML = `<div class="card"><h3>Қате орын алды</h3><p>${esc(err.message)}</p>
+      <div class="btn-row"><a class="btn" href="#/home">🏠 Басты бетке</a></div></div>`;
+  }
+  Store.updateChips();
+}
+
+/* =========================================================================
+   11. ІСКЕ ҚОСУ
+   ========================================================================= */
+Store.load();
+Store.updateChips();
+buildNav();
+window.addEventListener('hashchange', render);
+if(!location.hash) location.hash = '/home';
+render();
+</script>
+</body>
+</html>
